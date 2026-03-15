@@ -1,0 +1,92 @@
+/* =========================================
+   FOOTER STYLES
+   ========================================= */
+.site-footer {
+    background-color: #17232e; /* Dark background matching the FAQ */
+    color: #ffffff;
+    padding: 60px 20px 20px 20px;
+    font-family: 'Poppins', sans-serif;
+    border-top: 2px solid #2c4258; /* A subtle top border */
+}
+
+.footer-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Allows stacking on mobile screens */
+    gap: 40px;
+}
+
+.footer-brand {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-brand h3 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.footer-brand p {
+    color: #bbbbbb;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 350px;
+}
+
+.footer-links {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-links h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.footer-links ul {
+    list-style: none; /* Removes default bullets */
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #bbbbbb;
+    text-decoration: none; /* Removes underline */
+    font-size: 14px;
+    transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+/* Hover effect on links */
+.footer-links a:hover {
+    color: #ffffff;
+    padding-left: 5px; /* Slight move to the right on hover */
+}
+
+.footer-bottom {
+    max-width: 1000px;
+    margin: 40px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.footer-bottom p {
+    color: #888888;
+    font-size: 13px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+    }
+}

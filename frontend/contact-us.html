@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - [Your Website Name]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #181525; color: #fff; line-height: 1.6; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh;}
+        .container { max-width: 500px; width: 100%; margin: 20px; background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); color: #333;}
+        h1 { color: #17232e; text-align: center; margin-bottom: 10px; }
+        p.subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 30px; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        input[type="text"], input[type="email"], textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Poppins', sans-serif; font-size: 14px; box-sizing: border-box; }
+        textarea { resize: vertical; min-height: 120px; }
+        
+        button { width: 100%; padding: 12px; background-color: #17232e; color: #fff; border: none; border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #2c4258; }
+        
+        .contact-info { margin-top: 30px; text-align: center; font-size: 14px; color: #555; border-top: 1px solid #eee; padding-top: 20px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Get in Touch</h1>
+        <p class="subtitle">Have a question about our E-book bundles? We're here to help!</p>
+
+        <form action="#" method="POST">
+            <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="john@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Your Message</label>
+                <textarea id="message" name="message" placeholder="How can we help you?" required></textarea>
+            </div>
+            <button type="submit">Send Message</button>
+        </form>
+
+        <div class="contact-info">
+            <p>Email: <strong>[Your Support Email]</strong></p>
+            <p>Or reply directly to your purchase receipt!</p>
+        </div>
+    </div>
+</body>
+</html>
