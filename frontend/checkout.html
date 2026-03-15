@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout - [Your Website Name]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="workbook.css">
+    <link rel="stylesheet" href="footer-style.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: var(--c-bg-light); }
+        .header-simple { background: var(--c-dark); padding: 20px; text-align: center; color: var(--c-accent); font-size: 24px; font-weight: bold; }
+        .checkout-wrapper { max-width: 900px; margin: 40px auto; display: flex; gap: 30px; padding: 20px; flex-wrap: wrap; }
+        .form-box, .summary-box { background: var(--c-white); padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .form-box { flex: 2; min-width: 300px; }
+        .summary-box { flex: 1; min-width: 250px; height: fit-content; border-top: 4px solid var(--c-action); }
+        h2 { color: var(--c-dark); font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; color: var(--c-text-gray); }
+        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Poppins', sans-serif; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--c-text-gray); font-size: 15px; }
+        .total-row { font-weight: bold; font-size: 18px; color: var(--c-dark); border-top: 1px solid #eee; padding-top: 15px; margin-top: 10px; }
+        .btn-pay { width: 100%; text-align: center; border: none; font-size: 18px; padding: 15px; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header-simple">[Your Brand Name] Secure Checkout</div>
+    
+    <div class="checkout-wrapper">
+        <div class="form-box">
+            <h2>Billing Information</h2>
+            <form action="thank-you.html" method="GET">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address (For PDF Delivery)</label>
+                    <input type="email" name="email" placeholder="We will send the download link here" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number (WhatsApp)</label>
+                    <input type="text" name="phone" placeholder="Enter your mobile number" required>
+                </div>
+                <button type="submit" class="btn-red btn-pay">Proceed to Pay ₹299</button>
+            </form>
+        </div>
+
+        <div class="summary-box">
+            <h2>Order Summary</h2>
+            <div class="summary-row"><span>Ultimate Kids Workbook</span><span>₹1999</span></div>
+            <div class="summary-row"><span>Special Discount</span><span style="color: #27ae60;">- ₹1700</span></div>
+            <div class="summary-row total-row"><span>Total</span><span>₹299</span></div>
+            <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #888;">
+                🔒 100% Safe & Secure Payment
+            </div>
+        </div>
+    </div>
+</body>
+</html>
