@@ -115,52 +115,75 @@ if (containerCards) {
 // =========================================
 const track = document.getElementById('track');
 
-// Generate mock cards
 if (track) {
-    for (let i = 1; i <= 8; i++) {
+    // 8 Dummy images ka array
+    const dummyImages = [
+        "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&auto=format&fit=crop&q=60",
+        "https://images.unsplash.com/photo-1544716278-ca5e5f4cb5f1?w=500&auto=format&fit=crop&q=60",
+        "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=500&auto=format&fit=crop&q=60",
+        "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500&auto=format&fit=crop&q=60",
+        "https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=500&auto=format&fit=crop&q=60",
+        "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=500&auto=format&fit=crop&q=60",
+        "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=500&auto=format&fit=crop&q=60",
+        "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=500&auto=format&fit=crop&q=60"
+    ];
+
+    track.innerHTML = ''; // Purana content clear kar do
+
+    // Har card ke andar 1 single image generate karna
+    for (let i = 0; i < 8; i++) {
         track.innerHTML += `
             <div class="carousel-card">
-                <h3>Match It Up ${i}</h3>
-                <p>Draw lines to match the numbers<br>and objects that go together.</p>
-                <div class="mock-content">
-                    <div class="mock-col">
-                        <div class="mock-box">1</div>
-                        <div class="mock-box">2</div>
-                        <div class="mock-box">3</div>
-                    </div>
-                    <div class="mock-col">
-                        <div class="mock-circle" style="background: #4caf50;"></div>
-                        <div class="mock-circle" style="background: #2196f3;"></div>
-                        <div class="mock-circle" style="background: #e91e63;"></div>
-                    </div>
-                </div>
+                <img src="${dummyImages[i]}" alt="Sample ${i + 1}" class="carousel-image">
             </div>
         `;
     }
 
-    // Carousel Sliding Logic
+    // Carousel Sliding Logic (Auto Scroll & Dots)
     const dots = document.querySelectorAll('.dot');
     const carouselCards = document.querySelectorAll('.carousel-card');
+    let currentIndex = 0;
 
+    // Slide karne ka function
+    function moveCarousel(index) {
+        // 'active' class sabhi dots se hatao
+        dots.forEach(d => d.classList.remove('active'));
+        
+        // Jo dot current hai usko 'active' karo
+        if (dots[index]) {
+            dots[index].classList.add('active');
+        }
+
+        // Card ki width aur gap (15px) calculate karo
+        const cardWidth = carouselCards[0].offsetWidth;
+        const gap = 15; 
+
+        // Track ko left shift karo
+        const moveAmount = (cardWidth + gap) * index;
+        track.style.transform = `translateX(-${moveAmount}px)`;
+    }
+
+    // Har 3 second mein auto-scroll (Left se Right)
+    setInterval(() => {
+        // Calculate karo screen par kitne cards dikh rahe hain
+        let cardsToShow = window.innerWidth > 768 ? 3 : (window.innerWidth > 480 ? 2 : 1);
+        let maxIndex = carouselCards.length - cardsToShow;
+
+        currentIndex++;
+        
+        // Agar aakhri set par pahunch gaye, toh wapas 0 (start) par jao
+        if (currentIndex > maxIndex) {
+            currentIndex = 0;
+        }
+        
+        moveCarousel(currentIndex);
+    }, 3000); // 3000 milliseconds = 3 seconds
+
+    // Agar koi manually dot par click kare toh:
     dots.forEach(dot => {
         dot.addEventListener('click', (e) => {
-            // Remove 'active' class from all dots
-            dots.forEach(d => d.classList.remove('active'));
-
-            // Add 'active' to the clicked dot
-            const clickedDot = e.target;
-            clickedDot.classList.add('active');
-
-            // Find index of clicked dot
-            const index = parseInt(clickedDot.getAttribute('data-index'));
-
-            // Calculate card width and gap
-            const cardWidth = carouselCards[0].offsetWidth;
-            const gap = 15;
-
-            // Move the track
-            const moveAmount = (cardWidth + gap) * index;
-            track.style.transform = `translateX(-${moveAmount}px)`;
+            currentIndex = parseInt(e.target.getAttribute('data-index'));
+            moveCarousel(currentIndex);
         });
     });
 }
