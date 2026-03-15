@@ -262,17 +262,29 @@ body {
     border: 2px solid #e0e0e0;
     border-radius: 4px;
     background-color: var(--c-bg-light);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden; /* Bahar nikalti hui images ko chupane ke liye */
+    position: relative;
 }
 
-.image-container img {
+.image-slider {
+    display: flex;
+    width: 300%; /* Kyunki hum 3 images use kar rahe hain (100% * 3) */
+    height: 100%;
+    transition: transform 0.5s ease-in-out; /* Smooth sliding effect ke liye */
+}
+
+.image-slider img {
+    width: 33.333%; /* Har image 300% me se apni 1/3 jagah legi */
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/* .image-container img {
     width: 100%;
     height: 100%;
     object-fit: cover; 
-}
+} */
 
 .card-label {
     background-color: var(--c-bg-alt);
