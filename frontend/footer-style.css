@@ -2,11 +2,11 @@
    FOOTER STYLES
    ========================================= */
 .site-footer {
-    background-color: #17232e; /* Dark background matching the FAQ */
+    background-color: #2C3E50; /* Match with var(--c-dark) from workbook.css */
     color: #ffffff;
     padding: 60px 20px 20px 20px;
-    font-family: 'Poppins', sans-serif;
-    border-top: 2px solid #2c4258; /* A subtle top border */
+    font-family: 'Arial', sans-serif;
+    border-top: 4px solid #E74C3C; /* A nice warm red border on top */
 }
 
 .footer-container {
@@ -14,7 +14,7 @@
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap; /* Allows stacking on mobile screens */
+    flex-wrap: wrap; 
     gap: 40px;
 }
 
@@ -27,11 +27,11 @@
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 15px;
-    color: #ffffff;
+    color: #F1C40F; /* Yellow Accent */
 }
 
 .footer-brand p {
-    color: #bbbbbb;
+    color: #E0F7FA;
     font-size: 14px;
     line-height: 1.6;
     max-width: 350px;
@@ -50,7 +50,7 @@
 }
 
 .footer-links ul {
-    list-style: none; /* Removes default bullets */
+    list-style: none; 
     padding: 0;
 }
 
@@ -59,16 +59,15 @@
 }
 
 .footer-links a {
-    color: #bbbbbb;
-    text-decoration: none; /* Removes underline */
+    color: #E0F7FA;
+    text-decoration: none; 
     font-size: 14px;
     transition: color 0.3s ease, padding-left 0.3s ease;
 }
 
-/* Hover effect on links */
 .footer-links a:hover {
-    color: #ffffff;
-    padding-left: 5px; /* Slight move to the right on hover */
+    color: #F1C40F; /* Yellow hover effect */
+    padding-left: 5px; 
 }
 
 .footer-bottom {
@@ -80,11 +79,10 @@
 }
 
 .footer-bottom p {
-    color: #888888;
+    color: #bbbbbb;
     font-size: 13px;
 }
 
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .footer-container {
         flex-direction: column;
