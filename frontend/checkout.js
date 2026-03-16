@@ -1,38 +1,40 @@
 (function () {
-    // ======================== CONFIG ========================
-    // Replace with your actual keys / endpoints
-    const RAZORPAY_KEY = 'rzp_test_YOUR_KEY';          // test key
-    const STRIPE_PUBLIC_KEY = 'pk_test_YOUR_STRIPE_KEY';
-    const BACKEND_URL = 'http://127.0.0.1:8000/api';   // your backend base
+    const RAZORPAY_KEY = 'rzp_test_Aapki_Razorpay_Key'; // Yahan key daalein
+    const STRIPE_PUBLIC_KEY = 'pk_test_Aapki_Stripe_Key'; // Yahan key daalein
+    const BACKEND_URL = 'http://127.0.0.1:8000/api';   
 
-    // DOM elements
     const form = document.getElementById('checkout-form');
     const payBtn = document.getElementById('main-pay-button');
+    const paypalContainer = document.getElementById('paypal-button-container');
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
     const phoneInput = document.getElementById('phone');
     const totalSpan = document.querySelector('#total-amount span:last-child');
     const paymentOptions = document.querySelectorAll('.payment-option');
 
-    // Initialize Stripe
     const stripe = Stripe(STRIPE_PUBLIC_KEY);
 
-    // Helper to get selected payment method
     function getSelectedMethod() {
         return document.querySelector('input[name="payment_method"]:checked')?.value;
     }
 
-    // Update total based on selected method
     function updateTotalDisplay() {
         const method = getSelectedMethod();
         if (method === 'razorpay') {
             totalSpan.innerText = '₹299';
-        } else {
+            payBtn.style.display = 'block';
+            paypalContainer.style.display = 'none';
+        } else if (method === 'stripe') {
             totalSpan.innerText = '$3.99';
+            payBtn.style.display = 'block';
+            paypalContainer.style.display = 'none';
+        } else if (method === 'paypal') {
+            totalSpan.innerText = '$3.99';
+            payBtn.style.display = 'none'; // PayPal ka apna button aayega
+            paypalContainer.style.display = 'block';
         }
     }
 
-    // Highlight selected payment card
     paymentOptions.forEach(opt => {
         opt.addEventListener('click', function (e) {
             const radio = this.querySelector('input[type="radio"]');
@@ -43,85 +45,79 @@
         });
     });
 
-    // Set initial selected state
     document.querySelector('.payment-option input:checked').closest('.payment-option').classList.add('selected');
     updateTotalDisplay();
 
-    // ================== FORM SUBMISSION ==================
+    // ================== FORM SUBMISSION (Razorpay & Stripe) ==================
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
+        const userData = {
+            name: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            phone: phoneInput.value.trim()
+        };
 
-        // Basic validation
-        const name = nameInput.value.trim();
-        const email = emailInput.value.trim();
-        const phone = phoneInput.value.trim();
-        if (!name || !email || !phone) {
+        if (!userData.name || !userData.email || !userData.phone) {
             alert('Please fill all fields');
             return;
         }
 
         const method = getSelectedMethod();
-        if (!method) {
-            alert('Please select a payment method');
-            return;
-        }
-
-        // Disable button, show spinner
         payBtn.disabled = true;
         payBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
 
         try {
             if (method === 'razorpay') {
-                await handleRazorpay({ name, email, phone });
+                await handleRazorpay(userData);
             } else if (method === 'stripe') {
-                await handleStripe({ name, email, phone });
-            } else if (method === 'paypal') {
-                await handlePayPal({ name, email, phone });
+                await handleStripe(userData);
             }
         } catch (error) {
-            console.error('Payment error:', error);
-            alert('Payment initiation failed. Please try again.');
+            console.error(error);
+            alert('Payment error: ' + error.message);
             resetButton();
         }
     });
 
     // ================== RAZORPAY ==================
     async function handleRazorpay(userData) {
-        // 1. Create order on backend
-        const response = await fetch(`${BACKEND_URL}/create-order/`, {
+        // 1. Backend par order create karein
+        const res = await fetch(`${BACKEND_URL}/create-razorpay-order/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
         });
-        const data = await response.json();
+        const data = await res.json();
+        if (data.status !== 'success') throw new Error(data.message);
 
-        if (data.status !== 'success') {
-            throw new Error(data.message || 'Razorpay order creation failed');
-        }
-
-        // 2. Open Razorpay checkout
+        // 2. Razorpay Pop-up kholein
         const options = {
             key: RAZORPAY_KEY,
-            amount: 29900,        // ₹299 in paise
+            amount: 29900,
             currency: 'INR',
             name: 'Kids Workbook',
-            description: 'Ultimate Kids Workbook',
-            order_id: data.order_id,   // from backend
-            prefill: {
-                name: userData.name,
-                email: userData.email,
-                contact: userData.phone
-            },
-            handler: function (response) {
-                // Payment successful
-                alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
-                window.location.href = 'thank-you.html';
-            },
-            modal: {
-                ondismiss: function () {
+            order_id: data.order_id, 
+            prefill: { name: userData.name, email: userData.email, contact: userData.phone },
+            handler: async function (response) {
+                // 3. Payment verify karein backend par
+                const verifyRes = await fetch(`${BACKEND_URL}/verify-razorpay/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                });
+                const verifyData = await verifyRes.json();
+                if (verifyData.status === 'success') {
+                    window.location.href = `thank-you.html?token=${data.token}`; // Securely redirect
+                } else {
+                    alert('Payment Verification Failed!');
                     resetButton();
                 }
-            }
+            },
+            modal: { ondismiss: function () { resetButton(); } }
         };
         const rzp = new Razorpay(options);
         rzp.open();
@@ -135,81 +131,40 @@
             body: JSON.stringify(userData)
         });
         const session = await response.json();
-
-        if (session.error) {
-            throw new Error(session.error);
-        }
-
-        // Redirect to Stripe Checkout
+        if (session.error) throw new Error(session.error);
         const result = await stripe.redirectToCheckout({ sessionId: session.id });
-        if (result.error) {
-            throw new Error(result.error.message);
-        }
+        if (result.error) throw new Error(result.error.message);
     }
 
-    // ================== PAYPAL ==================
-    async function handlePayPal(userData) {
-        // For PayPal, we can either redirect to a backend PayPal payment page
-        // or use the PayPal JS SDK to create an order and redirect.
-        // Here we'll use the SDK approach.
-
-        // First, we need to load PayPal SDK with your client ID (already loaded in head)
-        // But we need to dynamically create a PayPal button or directly call `paypal.Buttons`
-
-        // A simple approach: create a hidden container, render button, then simulate click.
-        // However, to keep flow consistent, we can create a backend order and redirect.
-
-        // We'll assume you have a backend endpoint that creates a PayPal order and returns approval URL.
-        // For demonstration, we'll show a fallback.
-
-        // Option 1: Redirect via backend
-        /*
-        const response = await fetch(`${BACKEND_URL}/create-paypal-order/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-        });
-        const data = await response.json();
-        if (data.approval_url) {
-            window.location.href = data.approval_url;
-        } else {
-            throw new Error('PayPal order creation failed');
-        }
-        */
-
-        // Option 2: Use PayPal SDK inline (requires a container)
-        alert('PayPal integration: Please implement your backend endpoint and replace this alert with redirect.');
-        resetButton();
-
-        // In production, you'd create a container and use `paypal.Buttons`:
-        /*
-        const paypalContainer = document.createElement('div');
-        paypalContainer.style.display = 'none';
-        document.body.appendChild(paypalContainer);
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return fetch(`${BACKEND_URL}/create-paypal-order/`, {
+    // ================== PAYPAL (Auto loaded) ==================
+    paypal.Buttons({
+        createOrder: function(data, actions) {
+            if(!nameInput.value || !emailInput.value || !phoneInput.value) {
+                alert("Please fill name, email and phone first.");
+                return null;
+            }
+            return actions.order.create({
+                purchase_units: [{ amount: { value: '3.99' } }]
+            });
+        },
+        onApprove: async function(data, actions) {
+            return actions.order.capture().then(async function(details) {
+                // Payment ho gayi, backend ko btao
+                const verifyRes = await fetch(`${BACKEND_URL}/verify-paypal/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(userData)
-                }).then(res => res.json()).then(order => order.id);
-            },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(details => {
-                    alert('Payment successful!');
-                    window.location.href = 'thank-you.html';
+                    body: JSON.stringify({
+                        name: nameInput.value, email: emailInput.value, phone: phoneInput.value,
+                        paypal_order_id: details.id
+                    })
                 });
-            },
-            onError: function(err) {
-                alert('PayPal error');
-                resetButton();
-            }
-        }).render(paypalContainer).then(() => {
-            // Trigger click programmatically? Not straightforward.
-            // Better to use redirect method.
-        });
-        */
-    }
+                const verifyData = await verifyRes.json();
+                if (verifyData.status === 'success') {
+                    window.location.href = `thank-you.html?token=${verifyData.token}`;
+                }
+            });
+        }
+    }).render('#paypal-button-container');
 
     function resetButton() {
         payBtn.disabled = false;
