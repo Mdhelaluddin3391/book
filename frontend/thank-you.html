@@ -12,9 +12,9 @@
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--c-bg-alt);
+            /* Body ko column flex banayein taaki Nav top pe rahe aur Footer bottom pe */
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column; 
             min-height: 100vh;
             margin: 0;
         }
@@ -28,6 +28,8 @@
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             border-top: 6px solid #27ae60;
+            /* margin: auto; is card ko horizontally aur vertically center kar dega */
+            margin: auto; 
         }
 
         .icon {
