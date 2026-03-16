@@ -41,6 +41,7 @@ class Order(models.Model):
     payment_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     
     payment_method = models.CharField(max_length=50, blank=True, null=True)
+    transaction_id = models.CharField(max_length=255, blank=True, null=True)
     
     # Extra Razorpay, Stripe ids hata diye gaye hain
     

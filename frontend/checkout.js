@@ -75,3 +75,54 @@ async function payNow() {
         `;
     }
 }
+
+
+async function payNow() {
+    let name = document.getElementById("name").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let phone = document.getElementById("phone").value.trim();
+
+    if (name === "" || email === "" || phone === "") {
+        alert("Please fill Name, Email, and Phone number first.");
+        return;
+    }
+
+    const popup = document.getElementById("popup");
+    const popupBox = document.querySelector(".popup-box");
+    
+    popupBox.innerHTML = `<h3>Processing Order...</h3><p>Redirecting to secure gateway...</p>`;
+    popup.style.display = "flex";
+
+    try {
+        const response = await fetch(`${BACKEND_URL}/process-payment/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                phone: phone,
+                payment_method: selectedMethod
+            })
+        });
+        
+        const data = await response.json();
+        
+        if(data.status === 'success') {
+            // REAL INDUSTRY FLOW: Direct thank you nahi, Payment Gateway URL par bhejo
+            window.location.href = data.payment_url;
+        } else {
+            popupBox.innerHTML = `
+                <h3 style="color:red;">Order Failed</h3>
+                <p>${data.message}</p>
+                <button onclick="document.getElementById('popup').style.display='none'" style="margin-top:15px; padding:8px 20px; cursor:pointer;">Close</button>
+            `;
+        }
+    } catch (error) {
+        console.error("API error: ", error);
+        popupBox.innerHTML = `
+            <h3 style="color:red;">Network Error</h3>
+            <p>Django server se connect nahi ho pa raha hai.</p>
+            <button onclick="document.getElementById('popup').style.display='none'" style="margin-top:15px; padding:8px 20px; cursor:pointer;">Close</button>
+        `;
+    }
+}

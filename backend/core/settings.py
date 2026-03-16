@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 CORS_ALLOW_ALL_ORIGINS = True
-
+FRONTEND_URL = 'http://127.0.0.1:5500/frontend' # Isko apne live server port se match kar lein
 
 # Application definition
 
@@ -119,3 +119,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
+
+STRIPE_SECRET_KEY = 'sk_test_YourStripeSecretKeyHere'
+STRIPE_PUBLIC_KEY = 'pk_test_YourStripePublicKeyHere'
+
+# PayPal ke credentials (jab aap PayPal developer account banayenge tab milenge)
+PAYPAL_CLIENT_ID = 'YourPayPalClientIdHere'
+PAYPAL_SECRET = 'YourPayPalSecretHere'
+
