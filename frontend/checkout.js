@@ -23,45 +23,55 @@ async function payNow() {
         return;
     }
 
-    // Popup show karein "Processing..."
+    // 1. Popup show karein "Processing..."
     const popup = document.getElementById("popup");
     const popupBox = document.querySelector(".popup-box");
     
-    // Reset popup HTML in case of multiple clicks
     popupBox.innerHTML = `<h3>Processing Payment...</h3><p>Please wait</p>`;
     popup.style.display = "flex";
 
-    // 2 Seconds delay as requested
-    setTimeout(async () => {
-        popupBox.innerHTML = "<div class='success'>Payment Successful</div><p>Thank you for your purchase</p>";
+    try {
+        // 2. Fake delay for realistic feeling (1.5 seconds)
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // 3. Backend ko data bhejo
+        const response = await fetch(`${BACKEND_URL}/process-payment/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                phone: phone,
+                payment_method: selectedMethod
+            })
+        });
         
-        try {
-            // Backend me save karke Download Token mangwana
-            const response = await fetch(`${BACKEND_URL}/process-payment/`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    phone: phone,
-                    payment_method: selectedMethod
-                })
-            });
-            const data = await response.json();
+        const data = await response.json();
+        
+        // 4. Check karo ki backend ne success bola ya nahi
+        if(data.status === 'success') {
+            // Success hone par message dikhao aur redirect karo
+            popupBox.innerHTML = "<div class='success'>✅ Payment Successful</div><p>Redirecting to your download...</p>";
             
-            if(data.status === 'success') {
-                // Thodi der baad thank you page par bhej do
-                setTimeout(() => {
-                    window.location.href = `thank-you.html?token=${data.token}`;
-                }, 1500);
-            } else {
-                alert("Error: " + data.message);
-                popup.style.display = "none";
-            }
-        } catch (error) {
-            console.error("API error: ", error);
-            alert("Network error, please try again.");
-            popup.style.display = "none";
+            setTimeout(() => {
+                // Seedha thank-you page par bhejo with token
+                window.location.href = `thank-you.html?token=${data.token}`;
+            }, 1000);
+        } else {
+            // Agar backend se koi error aayi (jaise data galat ho)
+            popupBox.innerHTML = `
+                <h3 style="color:red;">Payment Failed</h3>
+                <p>${data.message}</p>
+                <button onclick="document.getElementById('popup').style.display='none'" style="margin-top:15px; padding:8px 20px; cursor:pointer;">Close</button>
+            `;
         }
-    }, 2000);
+    } catch (error) {
+        // Agar Django server band hai ya Network issue hai
+        console.error("API error: ", error);
+        popupBox.innerHTML = `
+            <h3 style="color:red;">Network Error</h3>
+            <p>Django server se connect nahi ho pa raha hai. Please apna backend server chalu karein.</p>
+            <button onclick="document.getElementById('popup').style.display='none'" style="margin-top:15px; padding:8px 20px; cursor:pointer;">Close</button>
+        `;
+    }
 }
