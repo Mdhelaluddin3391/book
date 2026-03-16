@@ -4,17 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Checkout · Kids Workbook</title>
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="checkout.css">
-
 </head>
 <body>
     <div class="header-simple"><span>📚 Kids Workbook</span> · Secure Checkout</div>
 
     <div class="checkout-wrapper">
-        <!-- Billing & Payment Form -->
         <div class="form-box">
             <h2><i class="fas fa-file-invoice"></i> Billing Information</h2>
             <form id="checkout-form">
@@ -33,53 +30,23 @@
 
                 <h3 style="margin: 2rem 0 1rem; font-size: 1.2rem;">Choose payment method</h3>
 
-                <!-- Razorpay (Indian) -->
-                <div class="payment-option" data-method="razorpay">
-                    <input type="radio" name="payment_method" value="razorpay" id="razorpay" checked>
+                <div class="payment-option selected" data-method="Card">
+                    <input type="radio" name="payment_method" value="Card" id="card" checked>
                     <div class="method-info">
-                        <span class="method-name">🇮🇳 Razorpay</span>
-                        <span class="method-price">₹299</span>
-                        <span class="method-icons">
-                            <i class="fab fa-google-pay"></i>
-                            <i class="fas fa-mobile-alt"></i>
-                            <i class="fab fa-cc-visa"></i>
-                        </span>
+                        <span class="method-name">💳 Credit / Debit Card</span>
                     </div>
-                    <div style="margin-left: auto; font-size: 0.9rem; color: #27ae60;">UPI · Cards · NetBanking</div>
                 </div>
 
-                <!-- Stripe (International) -->
-                <div class="payment-option" data-method="stripe">
-                    <input type="radio" name="payment_method" value="stripe" id="stripe">
-                    <div class="method-info">
-                        <span class="method-name">🌍 Stripe</span>
-                        <span class="method-price">$3.99</span>
-                        <span class="method-icons">
-                            <i class="fab fa-cc-visa"></i>
-                            <i class="fab fa-cc-mastercard"></i>
-                            <i class="fab fa-cc-amex"></i>
-                        </span>
-                    </div>
-                    <div style="margin-left: auto; font-size: 0.9rem;">Cards only</div>
-                </div>
-
-                <!-- PayPal -->
-                <div class="payment-option" data-method="paypal">
-                    <input type="radio" name="payment_method" value="paypal" id="paypal">
+                <div class="payment-option" data-method="PayPal">
+                    <input type="radio" name="payment_method" value="PayPal" id="paypal">
                     <div class="method-info">
                         <span class="method-name">🅿️ PayPal</span>
-                        <span class="method-price">$3.99</span>
-                        <span class="method-icons">
-                            <i class="fab fa-cc-paypal"></i>
-                        </span>
                     </div>
-                    <div style="margin-left: auto; font-size: 0.9rem;">PayPal account or card</div>
                 </div>
 
-                <button type="submit" id="main-pay-button" class="btn-pay">
-                    <i class="fas fa-lock"></i> Proceed to Secure Payment
+                <button type="button" id="main-pay-button" class="btn-pay" onclick="payNow()">
+                    <i class="fas fa-lock"></i> Pay Securely
                 </button>
-                <div id="paypal-button-container" style="display: none; margin-top: 2rem;"></div>
 
                 <div class="trust-badge">
                     <i class="fas fa-shield-alt"></i> 256-bit SSL secure · Money-back guarantee
@@ -87,7 +54,6 @@
             </form>
         </div>
 
-        <!-- Order Summary -->
         <div class="summary-box">
             <h2><i class="fas fa-shopping-bag"></i> Your Order</h2>
             <div class="summary-row">
@@ -97,10 +63,6 @@
             <div class="summary-row">
                 <span>Special Discount</span>
                 <span style="color: #e74c3c;">- ₹1700</span>
-            </div>
-            <div class="summary-row">
-                <span>Tax</span>
-                <span>₹0</span>
             </div>
             <div class="summary-row total-row" id="total-amount">
                 <span>Total</span>
@@ -112,12 +74,13 @@
         </div>
     </div>
 
-    <!-- Payment SDKs -->
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="checkout.js"></script>
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD&components=buttons"></script>
+    <div class="popup" id="popup">
+        <div class="popup-box">
+            <h3>Processing Payment...</h3>
+            <p>Please wait</p>
+        </div>
+    </div>
 
-    
+    <script src="checkout.js"></script>
 </body>
 </html>
