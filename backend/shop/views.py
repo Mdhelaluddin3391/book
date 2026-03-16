@@ -1,34 +1,22 @@
-import json, os
-from django.http import JsonResponse, FileResponse, Http404
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
-from django.conf import settings
-from .models import ContactMessage, Order
-import stripe
 import json
-from django.conf import settings
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import Order
-import json, os
-from django.http import JsonResponse, FileResponse, Http404
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
-from django.conf import settings
-from .models import ContactMessage, Order
+import os
 import stripe
 import paypalrestsdk
 
+from django.conf import settings
+from django.http import JsonResponse, FileResponse, Http404, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
+from .models import ContactMessage, Order, Product 
 
 stripe.api_key = getattr(settings, 'STRIPE_SECRET_KEY', '')
 
 paypalrestsdk.configure({
-    "mode": "sandbox",  # Jab aap live jayenge tab isko "live" kar dijiyega
+    "mode": "sandbox",  
     "client_id": getattr(settings, 'PAYPAL_CLIENT_ID', ''),
     "client_secret": getattr(settings, 'PAYPAL_SECRET', '')
 })
-
 
 @csrf_exempt
 def contact_api(request):
@@ -48,12 +36,18 @@ def process_real_payment(request):
             data = json.loads(request.body)
             method = data.get('payment_method', 'Card')
             
-            # 1. Order create karein (Status Pending rahega)
+            # STEP 1: Database se Product fetch karna
+            # Hum pehla active product fetch kar rahe hain
+            product = Product.objects.filter(is_active=True).first()
+            if not product:
+                return JsonResponse({"status": "error", "message": "Product currently unavailable."}, status=404)
+
+            # Order create karein (Status Pending rahega)
             order = Order.objects.create(
                 name=data.get('name'), 
                 email=data.get('email'), 
                 phone=data.get('phone'), 
-                amount=299.00, 
+                amount=product.price_inr, # Hardcoded 299 ki jagah database ki price
                 currency='INR', 
                 payment_method=method,
                 payment_status='Pending' 
@@ -67,22 +61,25 @@ def process_real_payment(request):
                         'price_data': {
                             'currency': 'inr',
                             'product_data': {
-                                'name': 'Ultimate Kids Workbook (PDF)',
+                                'name': product.name, # Model se naam fetch kiya
                             },
-                            'unit_amount': 29900, # Paise mein hota hai (299.00 * 100)
+                            'unit_amount': int(product.price_inr * 100), # Paise mein convert kiya
                         },
                         'quantity': 1,
                     }],
                     mode='payment',
                     success_url=f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}",
                     cancel_url=f"{settings.FRONTEND_URL}/checkout.html",
+                    # STEP 2: Webhook ke liye Metadata add karna
+                    metadata={
+                        'order_id': order.id
+                    }
                 )
                 
                 order.transaction_id = checkout_session.id
                 order.save()
 
                 return JsonResponse({"status": "success", "payment_url": checkout_session.url})
-
             # 3. Agar user ne 'PayPal' select kiya hai -> PayPal Checkout
             elif method == 'PayPal':
                 
@@ -142,14 +139,79 @@ def process_real_payment(request):
 
 
 
+@csrf_exempt
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    event = None
+
+    # Stripe webhook secret (Aapko settings.py me daalni padegi)
+    endpoint_secret = getattr(settings, 'STRIPE_WEBHOOK_SECRET', '')
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        return HttpResponse(status=400) # Invalid payload
+    except stripe.error.SignatureVerificationError as e:
+        return HttpResponse(status=400) # Invalid signature
+
+    # Jab payment 100% success ho jaye:
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        
+        # Metadata se order ID nikalein aur Order ko 'Completed' mark karein
+        order_id = session.get('metadata', {}).get('order_id')
+        if order_id:
+            try:
+                order = Order.objects.get(id=order_id)
+                order.payment_status = 'Completed'
+                order.save()
+            except Order.DoesNotExist:
+                pass # Security practice: Agar order na mile toh ignore karein
+
+    return HttpResponse(status=200)
+
+
+@csrf_exempt
+def paypal_webhook(request):
+    try:
+        # PayPal se aane wala data JSON format mein hota hai
+        payload = json.loads(request.body)
+        event_type = payload.get('event_type')
+
+        # Jab PayPal payment successfully complete ho jati hai
+        if event_type == 'PAYMENT.SALE.COMPLETED':
+            resource = payload.get('resource', {})
+            # PayPal webhook mein parent_payment wahi ID hoti hai jo humne order me save ki thi
+            parent_payment_id = resource.get('parent_payment')
+
+            if parent_payment_id:
+                try:
+                    # Database se order find karein aur Completed mark karein
+                    order = Order.objects.get(transaction_id=parent_payment_id)
+                    order.payment_status = 'Completed'
+                    order.save()
+                    print(f"✅ PayPal Order {order.id} Successfully Completed!")
+                except Order.DoesNotExist:
+                    print(f"❌ Order with ID {parent_payment_id} not found.")
+
+        return HttpResponse(status=200)
+
+    except Exception as e:
+        print(f"PayPal Webhook Error: {e}")
+        return HttpResponse(status=400)
 
 # ==================== SECURE DOWNLOAD ====================
 def secure_download_api(request, token):
     order = get_object_or_404(Order, download_token=token)
     
-    # Optional: Yahan aap verify kar sakte hain ki payment success hui hai ya nahi using API. 
-    # Abhi hum maan rahe hain ki agar user thank-you page par aaya hai, to success hai.
-    # Lekin strictly speaking, PayPal IPN ya Webhook se status 'Completed' karna best practice hai.
+    # STEP 3: API Ko Secure Karna - Check if payment is really completed
+    if order.payment_status != 'Completed':
+        return JsonResponse({
+            "error": "Access Denied. Aapki payment abhi tak verify nahi hui hai."
+        }, status=403)
 
     filepath = os.path.join(settings.BASE_DIR, 'protected_media', 'books', 'ReadMap.pdf')
     if os.path.exists(filepath):

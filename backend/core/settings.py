@@ -120,7 +120,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-
+STRIPE_WEBHOOK_SECRET = 'whsec_YahanAapkiStripeWebhookSecretAayegi'
 
 STRIPE_SECRET_KEY = 'sk_test_YourStripeSecretKeyHere'
 STRIPE_PUBLIC_KEY = 'pk_test_YourStripePublicKeyHere'
