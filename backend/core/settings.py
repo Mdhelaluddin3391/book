@@ -129,3 +129,21 @@ STRIPE_PUBLIC_KEY = 'pk_test_YourStripePublicKeyHere'
 PAYPAL_CLIENT_ID = 'YourPayPalClientIdHere'
 PAYPAL_SECRET = 'YourPayPalSecretHere'
 
+
+
+# backend/core/settings.py ke end mein add karein
+
+# Email Settings (Gmail ka example)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Yahan apna real Gmail address dalein
+EMAIL_HOST_USER = 'muhammadhelal228@gmail.com' 
+
+# Yahan apne Gmail ka "App Password" dalein (Normal password nahi chalega)
+# App password generate karne ke liye: Google Account -> Security -> 2-Step Verification -> App Passwords
+EMAIL_HOST_PASSWORD = 'upmv xedm hiwq oxod' 
+
+DEFAULT_FROM_EMAIL = 'muhammadhelal228@gmail.com'

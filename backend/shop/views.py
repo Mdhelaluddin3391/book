@@ -2,7 +2,7 @@ import json
 import os
 import stripe
 import paypalrestsdk
-
+from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse, FileResponse, Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -137,7 +137,41 @@ def process_real_payment(request):
             
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
+def send_order_email(order):
+    """
+    Yeh function customer ko successful payment ke baad email bhejega.
+    """
+    subject = 'Your Kids Learning Workbook is Ready for Download!'
+    # Dynamic link banayenge token ka use karke
+    download_link = f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}"
+    
+    message = f"""
+    Hello {order.name},
 
+    Thank you for purchasing the Ultimate Kids Workbook! Your payment was successful.
+    
+    You can download your PDF file anytime using the secure link below:
+    {download_link}
+
+    Note: Please do not share this link with others.
+
+    If you have any questions, reply to this email.
+
+    Best Regards,
+    Kids Workbook Team
+    """
+    
+    try:
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [order.email], # Customer ka email
+            fail_silently=False,
+        )
+        print(f"✅ Email successfully sent to {order.email}")
+    except Exception as e:
+        print(f"❌ Failed to send email to {order.email}. Error: {e}")
 
 @csrf_exempt
 def stripe_webhook(request):
@@ -145,7 +179,6 @@ def stripe_webhook(request):
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     event = None
 
-    # Stripe webhook secret (Aapko settings.py me daalni padegi)
     endpoint_secret = getattr(settings, 'STRIPE_WEBHOOK_SECRET', '')
 
     try:
@@ -153,47 +186,52 @@ def stripe_webhook(request):
             payload, sig_header, endpoint_secret
         )
     except ValueError as e:
-        return HttpResponse(status=400) # Invalid payload
+        return HttpResponse(status=400) 
     except stripe.error.SignatureVerificationError as e:
-        return HttpResponse(status=400) # Invalid signature
+        return HttpResponse(status=400) 
 
-    # Jab payment 100% success ho jaye:
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         
-        # Metadata se order ID nikalein aur Order ko 'Completed' mark karein
         order_id = session.get('metadata', {}).get('order_id')
         if order_id:
             try:
                 order = Order.objects.get(id=order_id)
-                order.payment_status = 'Completed'
-                order.save()
+                # Agar order pehle se Completed nahi hai, tabhi aage badho
+                if order.payment_status != 'Completed':
+                    order.payment_status = 'Completed'
+                    order.save()
+                    print(f"✅ Stripe Order {order.id} Successfully Completed!")
+                    
+                    # YAHAN EMAIL BHEJNE WALA FUNCTION CALL KIYA HAI
+                    send_order_email(order)
+                    
             except Order.DoesNotExist:
-                pass # Security practice: Agar order na mile toh ignore karein
+                pass 
 
     return HttpResponse(status=200)
-
-
 @csrf_exempt
 def paypal_webhook(request):
     try:
-        # PayPal se aane wala data JSON format mein hota hai
         payload = json.loads(request.body)
         event_type = payload.get('event_type')
 
-        # Jab PayPal payment successfully complete ho jati hai
         if event_type == 'PAYMENT.SALE.COMPLETED':
             resource = payload.get('resource', {})
-            # PayPal webhook mein parent_payment wahi ID hoti hai jo humne order me save ki thi
             parent_payment_id = resource.get('parent_payment')
 
             if parent_payment_id:
                 try:
-                    # Database se order find karein aur Completed mark karein
                     order = Order.objects.get(transaction_id=parent_payment_id)
-                    order.payment_status = 'Completed'
-                    order.save()
-                    print(f"✅ PayPal Order {order.id} Successfully Completed!")
+                    # Agar order pehle se Completed nahi hai, tabhi aage badho
+                    if order.payment_status != 'Completed':
+                        order.payment_status = 'Completed'
+                        order.save()
+                        print(f"✅ PayPal Order {order.id} Successfully Completed!")
+                        
+                        # YAHAN EMAIL BHEJNE WALA FUNCTION CALL KIYA HAI
+                        send_order_email(order)
+                        
                 except Order.DoesNotExist:
                     print(f"❌ Order with ID {parent_payment_id} not found.")
 
@@ -202,7 +240,8 @@ def paypal_webhook(request):
     except Exception as e:
         print(f"PayPal Webhook Error: {e}")
         return HttpResponse(status=400)
-
+    
+    
 # ==================== SECURE DOWNLOAD ====================
 def secure_download_api(request, token):
     order = get_object_or_404(Order, download_token=token)
