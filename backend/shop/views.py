@@ -97,7 +97,7 @@ def process_real_payment(request):
                     success_url=f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}",
                     cancel_url=f"{settings.FRONTEND_URL}/checkout.html",
                     metadata={
-                        'order_id': order.id
+                        'order_id': str(order.id)
                     }
                 )
                 
