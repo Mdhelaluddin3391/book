@@ -5,7 +5,9 @@ charset-normalizer==3.4.6
 cryptography==46.0.5
 Django==6.0.3
 django-cors-headers==4.9.0
+gunicorn==25.1.0
 idna==3.11
+packaging==26.0
 paypalrestsdk==1.13.3
 pycparser==3.0
 pyOpenSSL==26.0.0
