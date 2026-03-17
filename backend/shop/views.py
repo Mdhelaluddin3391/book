@@ -291,18 +291,23 @@ def secure_download_api(request, token):
             "error": "Access Denied. Aapki payment abhi tak verify nahi hui hai."
         }, status=403)
 
-    # NAYI LOGIC: Ab hum order.product use kar rahe hain
     product = order.product
     if not product or not product.pdf_file:
         raise Http404("Product file not found in database.")
 
-    filepath = product.pdf_file.path
+    # NAYA LOGIC: Exact path khud se banayenge taaki Render par koi issue na ho
+    import os
+    from django.conf import settings
+    
+    # settings.BASE_DIR aapke backend folder tak ka path dega
+    # product.pdf_file.name se 'books/ReadMap.pdf' milega
+    filepath = os.path.join(settings.BASE_DIR, 'protected_media', str(product.pdf_file.name))
 
     # Verify physical file existence before sending
     if os.path.exists(filepath):
-        # Format a dynamic clean filename (e.g., "Kids_Learning_Workbook.pdf")
         safe_filename = product.name.replace(" ", "_") + ".pdf"
         return FileResponse(open(filepath, 'rb'), as_attachment=True, filename=safe_filename)
     else:
         logger.error(f"File missing on server: {filepath}")
-        raise Http404("File not found on server.")
+        # DEBUGGING: Hum screen par hi path print kara rahe hain taaki pata chale error kahan hai
+        raise Http404(f"File not found on server. Django is looking exactly here: {filepath}")
