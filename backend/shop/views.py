@@ -7,6 +7,7 @@ from django.conf import settings
 from django.http import JsonResponse, FileResponse, Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
 
 from .models import ContactMessage, Order, Product 
 
@@ -137,41 +138,74 @@ def process_real_payment(request):
             
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
+
+# ==================== EMAIL HELPER FUNCTION ====================
 def send_order_email(order):
     """
-    Yeh function customer ko successful payment ke baad email bhejega.
+    Yeh function customer ko successful payment ke baad ek sundar HTML email bhejega.
     """
-    subject = 'Your Kids Learning Workbook is Ready for Download!'
-    # Dynamic link banayenge token ka use karke
+    subject = 'Your Kids Learning Workbook is Ready for Download! 🚀'
     download_link = f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}"
     
-    message = f"""
+    # 1. HTML Message (Yahan humne Inline CSS ka use kiya hai)
+    html_message = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            
+            <div style="background-color: #2C3E50; padding: 20px; text-align: center; border-bottom: 4px solid #E74C3C;">
+                <h1 style="color: #F1C40F; margin: 0; font-size: 24px;">📚 Kids Workbook</h1>
+            </div>
+            
+            <div style="padding: 30px; color: #333333;">
+                <h2 style="color: #2C3E50; font-size: 20px;">Hello {order.name},</h2>
+                <p style="font-size: 16px; line-height: 1.6;">Thank you for your purchase! Your payment was successful, and your <strong>Ultimate Kids Workbook</strong> is ready.</p>
+                
+                <p style="font-size: 16px; line-height: 1.6;">Click the button below to download your secure PDF file instantly:</p>
+                
+                <div style="text-align: center; margin: 35px 0;">
+                    <a href="{download_link}" style="background-color: #E74C3C; color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 5px; font-size: 18px; font-weight: bold; display: inline-block;">📥 Download Workbook Now</a>
+                </div>
+                
+                <p style="font-size: 14px; color: #777777;"><em>Note: This is a secure, unique link generated only for you. Please do not share it with others.</em></p>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 15px; text-align: center; font-size: 12px; color: #888888; border-top: 1px solid #eeeeee;">
+                &copy; 2026 Kids Workbook. All rights reserved.<br>
+                Need help? Just reply to this email.
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    """
+
+    # 2. Plain Text Fallback 
+    # (Agar kisi ka email app HTML support nahi karta, toh ye plain text dikhega)
+    plain_message = f"""
     Hello {order.name},
-
-    Thank you for purchasing the Ultimate Kids Workbook! Your payment was successful.
     
-    You can download your PDF file anytime using the secure link below:
-    {download_link}
-
-    Note: Please do not share this link with others.
-
-    If you have any questions, reply to this email.
-
-    Best Regards,
-    Kids Workbook Team
+    Thank you for your purchase! Your Ultimate Kids Workbook is ready.
+    Download your workbook here: {download_link}
+    
+    Need help? Just reply to this email.
     """
     
     try:
+        # Django ka send_mail function
         send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [order.email], # Customer ka email
+            subject=subject,
+            message=plain_message,          # Pehle plain text message pass karte hain
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[order.email],
+            html_message=html_message,      # Yahan HTML template pass karte hain
             fail_silently=False,
         )
-        print(f"✅ Email successfully sent to {order.email}")
+        print(f"✅ HTML Email successfully sent to {order.email}")
     except Exception as e:
-        print(f"❌ Failed to send email to {order.email}. Error: {e}")
+        print(f"❌ Failed to send HTML email to {order.email}. Error: {e}")
+
+# ===============================================================
 
 @csrf_exempt
 def stripe_webhook(request):
@@ -241,7 +275,7 @@ def paypal_webhook(request):
         print(f"PayPal Webhook Error: {e}")
         return HttpResponse(status=400)
     
-    
+
 # ==================== SECURE DOWNLOAD ====================
 def secure_download_api(request, token):
     order = get_object_or_404(Order, download_token=token)
