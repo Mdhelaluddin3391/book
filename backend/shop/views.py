@@ -63,13 +63,13 @@ def process_real_payment(request):
             data = json.loads(request.body)
             method = data.get('payment_method', 'Card')
             
-            # STEP 1: Fetch active product from Database
             product = Product.objects.filter(is_active=True).first()
             if not product:
                 return JsonResponse({"status": "error", "message": "Product currently unavailable."}, status=404)
 
             # Create Order (Status remains 'Pending')
             order = Order.objects.create(
+                product=product, # <-- YEH NAYI LINE ADD KI HAI
                 name=data.get('name'), 
                 email=data.get('email'), 
                 phone=data.get('phone'), 
@@ -166,7 +166,7 @@ def send_order_email(order):
     """
     Customer ko successful payment ke baad ek professional HTML email bhejta hai.
     """
-    subject = 'Your Kids Learning Workbook is Ready for Download! 🚀'
+    subject = f'Your {order.product.name} is Ready for Download! 🚀'
     download_link = f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}"
     
     html_message = f"""
@@ -281,7 +281,6 @@ def paypal_webhook(request):
     
 
 # ==================== SECURE DOWNLOAD API ====================
-
 def secure_download_api(request, token):
     # Retrieve order based on download token
     order = get_object_or_404(Order, download_token=token)
@@ -292,8 +291,8 @@ def secure_download_api(request, token):
             "error": "Access Denied. Aapki payment abhi tak verify nahi hui hai."
         }, status=403)
 
-    # Fetch dynamic product and its file
-    product = Product.objects.filter(is_active=True).first()
+    # NAYI LOGIC: Ab hum order.product use kar rahe hain
+    product = order.product
     if not product or not product.pdf_file:
         raise Http404("Product file not found in database.")
 

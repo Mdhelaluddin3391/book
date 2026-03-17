@@ -31,7 +31,7 @@ class Order(models.Model):
         ('Completed', 'Completed'),
         ('Failed', 'Failed'),
     )
-
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=15)

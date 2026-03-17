@@ -28,6 +28,10 @@ DEBUG = os.getenv('DEBUG') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 FRONTEND_URL = os.getenv('FRONTEND_URL')
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5500",  # Localhost frontend
+    "https://aapkidomain.com", # Aapki live website
+]
 
 # Application definition
 

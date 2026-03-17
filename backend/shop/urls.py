@@ -7,4 +7,5 @@ urlpatterns = [
     path('api/webhook/stripe/', views.stripe_webhook, name='stripe_webhook'),
     path('api/webhook/paypal/', views.paypal_webhook, name='paypal_webhook'),
     path('api/download/<uuid:token>/', views.secure_download_api, name='secure_download_api'),
+    path('api/product-details/', views.get_product_details, name='product_details'),
 ]
