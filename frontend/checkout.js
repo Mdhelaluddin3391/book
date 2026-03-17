@@ -1,4 +1,4 @@
-const BACKEND_URL = 'http://127.0.0.1:8000/api';   
+const BACKEND_URL = CONFIG.BACKEND_URL;
 const paymentOptions = document.querySelectorAll('.payment-option');
 let selectedMethod = "Card";
 
