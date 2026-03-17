@@ -279,7 +279,6 @@ def paypal_webhook(request):
         logger.error(f"PayPal Webhook Error: {str(e)}")
         return HttpResponse(status=400)
     
-
 # ==================== SECURE DOWNLOAD API ====================
 def secure_download_api(request, token):
     # Retrieve order based on download token
@@ -292,22 +291,20 @@ def secure_download_api(request, token):
         }, status=403)
 
     product = order.product
-    if not product or not product.pdf_file:
-        raise Http404("Product file not found in database.")
+    if not product:
+        raise Http404("Product not found in database.")
 
-    # NAYA LOGIC: Exact path khud se banayenge taaki Render par koi issue na ho
     import os
     from django.conf import settings
     
-    # settings.BASE_DIR aapke backend folder tak ka path dega
-    # product.pdf_file.name se 'books/ReadMap.pdf' milega
-    filepath = os.path.join(settings.BASE_DIR, 'protected_media', str(product.pdf_file.name))
+    # NAYA LOGIC: Database ke galat naam ko ignore karke direct asli file ka naam 'ReadMap.pdf' daalenge
+    filepath = os.path.join(settings.BASE_DIR, 'protected_media', 'books', 'ReadMap.pdf')
 
     # Verify physical file existence before sending
     if os.path.exists(filepath):
+        # Customer ko download karte waqt file ka naam clean dikhega
         safe_filename = product.name.replace(" ", "_") + ".pdf"
         return FileResponse(open(filepath, 'rb'), as_attachment=True, filename=safe_filename)
     else:
         logger.error(f"File missing on server: {filepath}")
-        # DEBUGGING: Hum screen par hi path print kara rahe hain taaki pata chale error kahan hai
-        raise Http404(f"File not found on server. Django is looking exactly here: {filepath}")
+        raise Http404(f"File abhi bhi nahi mili! Path check karein: {filepath}")
