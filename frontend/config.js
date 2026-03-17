@@ -1,7 +1,9 @@
+// Agar URL mein '127.0.0.1' ya 'localhost' hai, toh local backend use hoga,
+// warna production (Render) ka backend use hoga.
+const isLocalhost = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+
 const CONFIG = {
-    // Development ke liye (Abhi ye chalega)
-    BACKEND_URL: "http://127.0.0.1:8000/api" 
-    
-    // Live hone par isko uncomment karein aur upar wale ko comment kar dein:
-    // BACKEND_URL: "https://api.aapkidomain.com/api"
+    BACKEND_URL: isLocalhost 
+        ? "http://127.0.0.1:8000/api" 
+        : "https://book-27zu.onrender.com/api" // <-- Yahan apne Render backend ka URL daalna
 };
