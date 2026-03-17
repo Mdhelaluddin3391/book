@@ -19,6 +19,19 @@ paypalrestsdk.configure({
     "client_secret": getattr(settings, 'PAYPAL_SECRET', '')
 })
 
+
+def get_product_details(request):
+    product = Product.objects.filter(is_active=True).first()
+    if product:
+        return JsonResponse({
+            "name": product.name,
+            "price_inr": product.price_inr,
+            "price_usd": product.price_usd
+        })
+    return JsonResponse({"error": "Product not found"}, status=404)
+
+
+
 @csrf_exempt
 def contact_api(request):
     if request.method == 'POST':
