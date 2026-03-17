@@ -25,7 +25,7 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
 
-ALLOWED_HOSTS = ['*'] # Production mein isko apni domain se replace karein
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 FRONTEND_URL = os.getenv('FRONTEND_URL')
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -126,7 +126,8 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 # PayPal ke credentials (jab aap PayPal developer account banayenge tab milenge)
 PAYPAL_CLIENT_ID = os.getenv('PAYPAL_CLIENT_ID')
 PAYPAL_SECRET = os.getenv('PAYPAL_SECRET')
-
+# PayPal ka mode control karne ke liye
+PAYPAL_MODE = os.getenv('PAYPAL_MODE', 'sandbox')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

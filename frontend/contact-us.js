@@ -1,7 +1,7 @@
 
 document.querySelector('form').addEventListener('submit', function (event) {
     event.preventDefault(); // Page ko reload hone se rokna
-    const BACKEND_URL = CONFIG.BACKEND_URL;
+
     // Form ka data collect karna
     const name = document.querySelector('input[name="name"]').value;
     const email = document.querySelector('input[name="email"]').value;
@@ -11,7 +11,7 @@ document.querySelector('form').addEventListener('submit', function (event) {
     submitBtn.innerHTML = "Sending..."; // Button ka text change karna
 
     // API ko data bhejna
-    fetch('BACKEND_URL/contact/', {
+    fetch(`${BACKEND_URL}/contact/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
