@@ -86,7 +86,7 @@ def process_real_payment(request):
                 
                 # Note: PayPal ka testing environment (Sandbox) kai baar INR me error deta hai. 
                 # Isliye integration ke liye hum yahan USD use kar rahe hain. Live mode me aap account settings ke hisab se badal sakte hain.
-                usd_amount = "3.99" 
+                usd_amount = str(product.price_usd)
                 
                 payment = paypalrestsdk.Payment({
                     "intent": "sale",

@@ -123,7 +123,6 @@ STATIC_URL = 'static/'
 STRIPE_WEBHOOK_SECRET = 'whsec_YahanAapkiStripeWebhookSecretAayegi'
 
 STRIPE_SECRET_KEY = 'sk_test_YourStripeSecretKeyHere'
-STRIPE_PUBLIC_KEY = 'pk_test_YourStripePublicKeyHere'
 
 # PayPal ke credentials (jab aap PayPal developer account banayenge tab milenge)
 PAYPAL_CLIENT_ID = 'YourPayPalClientIdHere'
@@ -131,7 +130,6 @@ PAYPAL_SECRET = 'YourPayPalSecretHere'
 
 
 
-# backend/core/settings.py ke end mein add karein
 
 # Email Settings (Gmail ka example)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -437,7 +437,7 @@ body {
     text-align: center;
 }
 
-.mock-content {
+/* .mock-content {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -465,7 +465,7 @@ body {
     height: 30px;
     border-radius: 50%;
     margin: auto;
-}
+} */
 
 .dots-container {
     display: flex;

@@ -24,7 +24,7 @@ body {
     line-height: 1.5;
 }
 
-.header-simple {
+/* .header-simple {
     background: var(--c-dark);
     padding: 1.2rem;
     text-align: center;
@@ -36,7 +36,7 @@ body {
 
 .header-simple span {
     color: var(--c-accent);
-}
+} */
 
 .checkout-wrapper {
     max-width: 1200px;
@@ -271,8 +271,8 @@ input:focus {
     color: var(--c-dark);
 }
 
-.success {
+/* .success {
     color: #16a34a;
     font-size: 22px;
     font-weight: 700;
-}
+} */

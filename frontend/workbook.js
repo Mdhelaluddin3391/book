@@ -191,12 +191,12 @@ if (track) {
 // =========================================
 // --- 3. MOBILE ADDICTION BUTTON JS ---
 // =========================================
-const buyButton = document.getElementById('buy-button');
-if (buyButton) {
-    buyButton.addEventListener('click', function () {
-        alert("Thank you! Redirecting to the payment page for 199 INR...");
-    });
-}
+// const buyButton = document.getElementById('buy-button');
+// if (buyButton) {
+//     buyButton.addEventListener('click', function () {
+//         alert("Thank you! Redirecting to the payment page for 199 INR...");
+//     });
+// }
 
 // =========================================
 // --- 4. FAQ SECTION LOGIC ---
