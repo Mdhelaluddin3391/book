@@ -220,3 +220,24 @@ faqQuestions.forEach(question => {
         }
     });
 });
+
+
+// =========================================
+// --- 5. DYNAMIC PRICE FETCH LOGIC ---
+// =========================================
+document.addEventListener("DOMContentLoaded", function() {
+    // Backend se product details aur price fetch karein
+    fetch(`${CONFIG.BACKEND_URL}/product-details/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.price_inr) {
+                // Jin spans mein 'dynamic-price' class hai, unhe select karo
+                const priceElements = document.querySelectorAll('.dynamic-price');
+                priceElements.forEach(el => {
+                    // Yahan par dynamic price update ho jayega
+                    el.innerHTML = `Only ₹${data.price_inr}/- (Free Delivery)`;
+                });
+            }
+        })
+        .catch(err => console.error("Error fetching product details:", err));
+});

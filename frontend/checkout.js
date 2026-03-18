@@ -63,3 +63,29 @@ async function payNow() {
         `;
     }
 }
+
+// =========================================
+// --- DYNAMIC PRICE FETCH LOGIC ---
+// =========================================
+document.addEventListener("DOMContentLoaded", async function() {
+    try {
+        // Backend se product details fetch karo
+        const response = await fetch(`${BACKEND_URL}/product-details/`);
+        const data = await response.json();
+        
+        if (data && data.price_inr) {
+            const finalPrice = data.price_inr;
+            
+            // Dummy logic: Base price hamesha final price se 1700 zyada dikhane ke liye (Aap isko apne hisaab se change kar sakte hain)
+            const discountAmount = 1700;
+            const basePrice = finalPrice + discountAmount;
+
+            // HTML elements ko update karo
+            document.getElementById('base-price').innerText = `₹${basePrice}`;
+            document.getElementById('discount-price').innerText = `- ₹${discountAmount}`;
+            document.getElementById('final-price').innerText = `₹${finalPrice}`;
+        }
+    } catch (error) {
+        console.error("Error fetching dynamic price on checkout:", error);
+    }
+});
