@@ -308,3 +308,38 @@ def secure_download_api(request, token):
     else:
         logger.error(f"File missing on server: {filepath}")
         raise Http404(f"File abhi bhi nahi mili! Path check karein: {filepath}")
+    
+
+@csrf_exempt
+def execute_paypal_payment(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            payment_id = data.get('paymentId')
+            payer_id = data.get('PayerID')
+            token = data.get('token')
+            
+            # PayPal se payment find karein
+            payment = paypalrestsdk.Payment.find(payment_id)
+            
+            # Payment Execute karein
+            if payment.execute({"payer_id": payer_id}):
+                order = get_object_or_404(Order, download_token=token)
+                
+                # Order ka status update karein
+                if order.payment_status != 'Completed':
+                    order.payment_status = 'Completed'
+                    order.save()
+                    logger.info(f"PayPal Order {order.id} Successfully Executed & Completed!")
+                    send_order_email(order) # Customer ko email bhej dein
+                    
+                return JsonResponse({"status": "success"})
+            else:
+                logger.error(f"PayPal Execute Error: {payment.error}")
+                return JsonResponse({"status": "error", "message": "Payment execution failed."})
+                
+        except Exception as e:
+            logger.error(f"Execute PayPal Exception: {str(e)}")
+            return JsonResponse({"status": "error", "message": str(e)})
+            
+    return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
