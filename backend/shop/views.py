@@ -8,12 +8,6 @@ from django.conf import settings
 from django.http import JsonResponse, FileResponse, Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
-import json
-import paypalrestsdk
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
-from .models import Order
 from .models import ContactMessage, Order, Product 
 
 # ==================== INITIALIZATION & CONFIG ====================
@@ -72,8 +66,14 @@ def process_real_payment(request):
         try:
             data = json.loads(request.body)
             method = data.get('payment_method', 'Card')
+            product_id = data.get('product_id') # Frontend se specific product ka ID lenge
             
-            product = Product.objects.filter(is_active=True).first()
+            # ✅ UPDATE: Agar frontend ne product_id bheja hai toh usko lo, warna pehla active product le lo (fallback)
+            if product_id:
+                product = Product.objects.filter(id=product_id, is_active=True).first()
+            else:
+                product = Product.objects.filter(is_active=True).first()
+
             if not product:
                 return JsonResponse({"status": "error", "message": "Product currently unavailable."}, status=404)
 
@@ -83,8 +83,8 @@ def process_real_payment(request):
                 name=data.get('name'), 
                 email=data.get('email'), 
                 phone=data.get('phone'), 
-                amount=product.price_usd, # INR se USD
-                currency='USD',           # INR se USD
+                amount=product.price_usd,
+                currency='USD',
                 payment_method=method,
                 payment_status='Pending' 
             )
@@ -95,11 +95,11 @@ def process_real_payment(request):
                     payment_method_types=['card'],
                     line_items=[{
                         'price_data': {
-                            'currency': 'usd', # Comma add kar diya hai
+                            'currency': 'usd',
                             'product_data': {
-                                'name': product.name,
+                                'name': product.name, # Yahan specific product ka naam jayega
                             },
-                            'unit_amount': int(product.price_usd * 100), # INR se USD
+                            'unit_amount': int(product.price_usd * 100), 
                         },
                         'quantity': 1,
                     }],
@@ -132,8 +132,8 @@ def process_real_payment(request):
                     "transactions": [{
                         "item_list": {
                             "items": [{
-                                "name": product.name,
-                                "sku": f"workbook_{product.id}",
+                                "name": product.name, # Specific product
+                                "sku": f"product_{product.id}",
                                 "price": usd_amount,
                                 "currency": "USD",
                                 "quantity": 1
@@ -253,7 +253,7 @@ def stripe_webhook(request):
                     order.payment_status = 'Completed'
                     order.save()
                     logger.info(f"Stripe Order {order.id} Successfully Completed!")
-                    send_order_email(order)
+                    send_order_email(order) # Stripe ke success par email
             except Order.DoesNotExist:
                 logger.warning(f"Stripe Webhook: Order {order_id} not found.")
 
@@ -277,7 +277,7 @@ def paypal_webhook(request):
                         order.payment_status = 'Completed'
                         order.save()
                         logger.info(f"PayPal Order {order.id} Successfully Completed!")
-                        send_order_email(order)
+                        send_order_email(order) # PayPal Webhook aane par email
                 except Order.DoesNotExist:
                     logger.warning(f"PayPal Webhook: Order with transaction ID {parent_payment_id} not found.")
 
@@ -301,12 +301,7 @@ def secure_download_api(request, token):
     product = order.product
     if not product or not product.pdf_file:
         raise Http404("Product ya uski file database mein nahi mili.")
-
-    import os
-    from django.conf import settings
     
-    # NAYA LOGIC: Ab direct database se product ki file ka actual path uthayega
-    # Chahe wo MathBook.pdf ho ya DrawingBook.pdf
     filepath = product.pdf_file.path
 
     # Verify physical file existence before sending
@@ -344,8 +339,8 @@ def execute_paypal_payment(request):
                     order.save()
                     print(f"PayPal Order {order.id} Successfully Executed & Completed!")
                     
-                    # Note: Agar aapke paas customer ko email bhejne ka function hai 
-                    # toh aap usey yahan call kar sakte hain.
+                    # ✅ FIX: Yahan Par Email Function Add Kar Diya Gaya Hai
+                    send_order_email(order)
                     
                 return JsonResponse({"status": "success"})
             else:
