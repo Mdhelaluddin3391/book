@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const priceElements = document.querySelectorAll('.dynamic-price');
                 priceElements.forEach(el => {
                     // Yahan par dynamic price update ho jayega
-                    el.innerHTML = `Only ₹${data.price_inr}/- (Free Delivery)`;
+                    el.innerHTML = `Only ₹${data.price_inr}/- `;
                 });
             }
         })
