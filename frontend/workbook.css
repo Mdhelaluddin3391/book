@@ -2,7 +2,7 @@
    COLOR PALETTE & VARIABLES (Kids & Trust Psychology)
    ========================================= */
    :root {
-    --c-primary: #120d6e;       /* Trustworthy Indigo for Parents */
+    --c-primary: #06033d;       /* Trustworthy Indigo for Parents */
     --c-secondary: #10B981;     /* Growth/Success Emerald Green */
     --c-action: #FF5A5F;        /* Vibrant Coral Red for High Conversion CTAs */
     --c-action-hover: #E0484D;  /* Darker Coral for Hover */
@@ -84,7 +84,7 @@ body {
    HERO SECTION (Eye-catching & Trustworthy)
    ========================================= */
 .hero-section {
-    background: linear-gradient(135deg, var(--c-primary) 0%, #045191 100%);
+    background: linear-gradient(135deg, var(--c-primary) 0%, #04115f 100%);
     color: var(--c-white);
     padding: 80px 5% 100px;
     text-align: center;
@@ -383,7 +383,7 @@ body {
    WORKSHEET BUNDLE SECTION
    ========================================= */
 .worksheet-section {
-    background-color: var(--c-primary);
+    background-color: #06033d;
     padding: 80px 5%;
     text-align: center;
 }
@@ -500,7 +500,7 @@ body {
    CAROUSEL SECTION
    ========================================= */
 .carousel-section-wrapper {
-    background: linear-gradient(135deg, var(--c-dark) 0%, #0F172A 100%);
+    background: #06033d;
     color: var(--c-white);
     display: flex;
     justify-content: center;
@@ -674,6 +674,125 @@ body {
     line-height: 1.7;
 }
 
+
+/* background: linear-gradient(135deg, var(--c-dark) 0%, #0F172A 100%); */
+/* =========================================
+   PREMIUM BUNDLE & RECOMMEND SECTION
+   ========================================= */
+.premium-bundle-section {
+    background: #06033d;
+    padding: 80px 5%;
+    color: var(--c-white);
+}
+
+.premium-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.text-white {
+    color: var(--c-white) !important;
+}
+
+.bundle-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 50px;
+}
+
+.bundle-image-box {
+    flex: 1;
+    min-width: 300px;
+    background: var(--c-white);
+    padding: 15px;
+    border-radius: 12px;
+    border: 3px solid #EF4444; /* Screenshot jaisa red border */
+    text-align: center;
+}
+
+.printer-img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 8px;
+}
+
+.bundle-features {
+    flex: 1.2;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.b-feature-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.b-icon {
+    font-size: 30px;
+    margin-top: 5px;
+}
+
+.print-icon { color: #EF4444; } /* Red */
+.track-icon { color: #F59E0B; } /* Yellow */
+.award-icon { color: #3B82F6; } /* Blue */
+
+.b-text h3 {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.b-text p {
+    color: #CBD5E1;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.recommend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.rec-card {
+    background: var(--c-white);
+    border-radius: 12px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s ease;
+}
+
+.rec-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Bottom borders corresponding to colors */
+.rec-card.border-red { border-bottom: 6px solid #EF4444; }
+.rec-card.border-yellow { border-bottom: 6px solid #F59E0B; }
+.rec-card.border-blue { border-bottom: 6px solid #3B82F6; }
+
+.rec-icon {
+    font-size: 45px;
+    margin-bottom: 20px;
+}
+
+.rec-card h3 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.rec-card p {
+    color: var(--c-text-gray);
+    font-size: 14px;
+    line-height: 1.6;
+}
 /* =========================================
    MEDIA QUERIES (Responsive Design)
    ========================================= */
@@ -715,3 +834,5 @@ body {
     .effect-item { flex-direction: column; text-align: center; }
     .effect-item i { margin-bottom: 10px; }
 }
+
+

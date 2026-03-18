@@ -3,7 +3,7 @@
    ========================================= */
 
 .site-footer {
-    background-color: var(--c-dark, #1E293B); /* Deep slate dark for premium feel */
+    background-color:#02013d; /* Deep slate dark for premium feel */
     color: var(--c-white, #FFFFFF);
     padding: 80px 5% 30px;
     font-family: 'Poppins', 'Arial', sans-serif;
