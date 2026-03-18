@@ -1,14 +1,22 @@
+/* =========================================
+   CHECKOUT PAGE STYLES (Modern & Trustworthy)
+   ========================================= */
+
 :root {
-    --c-bg-light: #f9fafc;
-    --c-white: #ffffff;
-    --c-dark: #1e2b3c;
-    --c-accent: #f7b731;
-    --c-action: #2ecc71;
-    --c-text-gray: #4a5568;
-    --c-border: #e2e8f0;
-    --c-danger: #e74c3c;
-    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
-    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
+    --c-primary: #4F46E5;       /* Trustworthy Indigo */
+    --c-secondary: #10B981;     /* Success Green for Security badges */
+    --c-action: #FF5A5F;        /* Vibrant Coral Red for CTA */
+    --c-action-hover: #E0484D;
+    --c-accent: #FFC107;        /* Playful Yellow */
+    --c-dark: #1E293B;          /* Soft Slate Dark */
+    --c-text-gray: #475569;
+    --c-border: #E2E8F0;
+    --c-bg-light: #F8FAFC;
+    --c-bg-alt: #F0F9FF;
+    --c-white: #FFFFFF;
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -18,261 +26,308 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', 'Arial', sans-serif;
     background-color: var(--c-bg-light);
     color: var(--c-dark);
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
-/* .header-simple {
-    background: var(--c-dark);
-    padding: 1.2rem;
-    text-align: center;
-    color: white;
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-}
-
-.header-simple span {
-    color: var(--c-accent);
-} */
-
+/* =========================================
+   LAYOUT WRAPPER
+   ========================================= */
 .checkout-wrapper {
     max-width: 1200px;
-    margin: 3rem auto;
+    margin: 4rem auto;
     display: flex;
-    gap: 2rem;
-    padding: 0 1.5rem;
+    gap: 3rem;
+    padding: 0 5%;
     flex-wrap: wrap;
+    align-items: flex-start;
 }
 
-/* Form card */
+/* =========================================
+   FORM BOX (Left Side)
+   ========================================= */
 .form-box {
     flex: 2;
     min-width: 320px;
     background: var(--c-white);
     border-radius: 24px;
-    box-shadow: var(--shadow-sm);
-    padding: 2rem;
-    transition: box-shadow 0.2s;
+    box-shadow: var(--shadow-md);
+    padding: 3rem;
+    border-top: 8px solid var(--c-primary); /* Gives a premium, secure feel */
 }
 
-.form-box:hover {
-    box-shadow: var(--shadow-hover);
-}
-
-/* Summary card */
+/* =========================================
+   SUMMARY BOX (Right Side)
+   ========================================= */
 .summary-box {
     flex: 1;
-    min-width: 280px;
+    min-width: 320px;
     background: var(--c-white);
     border-radius: 24px;
-    box-shadow: var(--shadow-sm);
-    padding: 2rem;
-    height: fit-content;
-    border-top: 6px solid var(--c-action);
+    box-shadow: var(--shadow-md);
+    padding: 2.5rem;
+    position: sticky;
+    top: 100px; /* Sticks to the top when scrolling */
+    border: 2px solid var(--c-border);
 }
 
 h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.6rem;
+    font-weight: 800;
     color: var(--c-dark);
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 h2 i {
-    color: var(--c-accent);
+    color: var(--c-primary);
+    background: var(--c-bg-alt);
+    padding: 12px;
+    border-radius: 12px;
 }
 
+/* =========================================
+   INPUT FIELDS
+   ========================================= */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.8rem;
 }
 
 label {
     display: block;
     font-weight: 600;
-    margin-bottom: 0.4rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
     color: var(--c-text-gray);
 }
 
-input,
-select {
+input, select {
     width: 100%;
-    padding: 0.9rem 1rem;
-    border: 1.5px solid var(--c-border);
+    padding: 1.1rem 1.2rem;
+    border: 2px solid var(--c-border);
     border-radius: 16px;
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
-    transition: border 0.2s, box-shadow 0.2s;
-    background: white;
+    color: var(--c-dark);
+    background: #F8FAFC;
+    transition: all 0.3s ease;
 }
 
 input:focus {
     outline: none;
-    border-color: var(--c-accent);
-    box-shadow: 0 0 0 4px rgba(247, 183, 49, 0.15);
+    border-color: var(--c-primary);
+    background: var(--c-white);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); /* Soft glowing focus ring */
 }
 
-/* Payment method cards */
+/* =========================================
+   PAYMENT OPTIONS (Radio Cards)
+   ========================================= */
 .payment-option {
     border: 2px solid var(--c-border);
-    border-radius: 20px;
-    padding: 1rem 1.2rem;
-    margin-bottom: 1rem;
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1.2rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    background: white;
+    gap: 1.2rem;
+    background: var(--c-white);
+}
+
+.payment-option:hover {
+    border-color: #CBD5E1;
+    background: #F8FAFC;
 }
 
 .payment-option.selected {
-    border-color: var(--c-action);
-    background: #f0fff4;
+    border-color: var(--c-primary);
+    background: var(--c-bg-alt);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
 }
 
 .payment-option input[type="radio"] {
-    width: 20px;
-    height: 20px;
-    accent-color: var(--c-action);
-    margin-right: 0.5rem;
+    width: 22px;
+    height: 22px;
+    accent-color: var(--c-primary);
+    margin: 0;
+    cursor: pointer;
 }
 
-.payment-option .method-info {
+.method-info {
     flex: 1;
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem 1rem;
 }
 
 .method-name {
     font-weight: 700;
     font-size: 1.1rem;
+    color: var(--c-dark);
 }
 
-.method-price {
-    background: var(--c-dark);
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 40px;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.method-icons i {
-    font-size: 1.8rem;
-    margin: 0 0.2rem;
-    color: #4a5568;
-}
-
+/* =========================================
+   PAY BUTTON
+   ========================================= */
 .btn-pay {
     width: 100%;
-    background: var(--c-action);
-    color: white;
+    background: linear-gradient(135deg, var(--c-action) 0%, #FF3338 100%);
+    color: var(--c-white);
     border: none;
-    border-radius: 40px;
+    border-radius: 50px; /* Pill shape */
     padding: 1.2rem;
     font-size: 1.2rem;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     margin-top: 2rem;
-    box-shadow: 0 8px 16px rgba(46, 204, 113, 0.3);
+    box-shadow: 0 10px 25px rgba(255, 90, 95, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.8rem;
 }
 
 .btn-pay:hover {
-    background: #27ae60;
-    transform: scale(1.02);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(255, 90, 95, 0.5);
+    background: linear-gradient(135deg, #FF3338 0%, var(--c-action) 100%);
 }
 
 .btn-pay:disabled {
-    background: #b0bec5;
+    background: #CBD5E1;
     cursor: not-allowed;
     box-shadow: none;
+    transform: none;
 }
 
+/* =========================================
+   SUMMARY DETAILS
+   ========================================= */
 .summary-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
     color: var(--c-text-gray);
+    font-size: 1.05rem;
 }
 
 .total-row {
     font-weight: 800;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     color: var(--c-dark);
     border-top: 2px dashed var(--c-border);
-    padding-top: 1.2rem;
-    margin-top: 1rem;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
 }
 
 .trust-badge {
     text-align: center;
-    margin-top: 2rem;
-    font-size: 0.9rem;
-    color: #718096;
+    margin-top: 2.5rem;
+    font-size: 0.95rem;
+    color: var(--c-text-gray);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     border-top: 1px solid var(--c-border);
     padding-top: 1.5rem;
+    font-weight: 600;
 }
 
 .trust-badge i {
-    color: var(--c-action);
+    color: var(--c-secondary); /* Green color for trust/secure */
+    font-size: 1.2rem;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .checkout-wrapper {
-        flex-direction: column;
-    }
-}
-
-
-/* =================== POPUP STYLES =================== */
+/* =========================================
+   POPUP STYLES
+   ========================================= */
 .popup {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(5px);
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 2000;
 }
 
 .popup-box {
-    background: white;
-    padding: 30px;
-    border-radius: 16px;
+    background: var(--c-white);
+    padding: 40px;
+    border-radius: 24px;
     text-align: center;
-    width: 320px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .popup-box h3 {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: var(--c-dark);
+    font-size: 1.5rem;
+    font-weight: 800;
 }
 
-/* .success {
-    color: #16a34a;
-    font-size: 22px;
-    font-weight: 700;
-} */
+.popup-box p {
+    color: var(--c-text-gray);
+    font-size: 1.1rem;
+}
+
+.popup-box button {
+    background: var(--c-primary);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: 600;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.popup-box button:hover {
+    background: #3730A3;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 850px) {
+    .checkout-wrapper {
+        flex-direction: column;
+        margin: 2rem auto;
+    }
+    .form-box, .summary-box {
+        width: 100%;
+        padding: 2rem;
+    }
+    .summary-box {
+        position: static;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-box {
+        padding: 1.5rem;
+    }
+    h2 {
+        font-size: 1.4rem;
+    }
+}
