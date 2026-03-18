@@ -1,18 +1,7 @@
 from django.contrib import admin
-from .models import ContactMessage, Order, Product
-
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'mrp_usd', 'price_usd', 'is_active')
-
-admin.site.register(ContactMessage)
-admin.site.register(Order)
-
-
-from django.contrib import admin
 from django.contrib import messages
 from .models import ContactMessage, Order, Product
-from .views import send_order_email  # View se email send karne wala function import kar rahe hain
+from .views import send_order_email  
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
