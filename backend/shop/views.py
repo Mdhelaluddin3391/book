@@ -31,14 +31,12 @@ paypalrestsdk.configure({
     "client_secret": getattr(settings, 'PAYPAL_SECRET', '')
 })
 
-# ==================== API VIEWS ====================
 def get_product_details(request):
     product = Product.objects.filter(is_active=True).first()
     if product:
         return JsonResponse({
             "name": product.name,
-            "mrp_inr": product.mrp_inr, 
-            "price_inr": product.price_inr,
+            "mrp_usd": product.mrp_usd,
             "price_usd": product.price_usd
         })
     return JsonResponse({"error": "Product not found"}, status=404)
@@ -73,12 +71,12 @@ def process_real_payment(request):
 
             # Create Order (Status remains 'Pending')
             order = Order.objects.create(
-                product=product, # <-- YEH NAYI LINE ADD KI HAI
+                product=product,
                 name=data.get('name'), 
                 email=data.get('email'), 
                 phone=data.get('phone'), 
-                amount=product.price_inr, 
-                currency='INR', 
+                amount=product.price_usd, # INR se USD
+                currency='USD',           # INR se USD
                 payment_method=method,
                 payment_status='Pending' 
             )
@@ -89,11 +87,11 @@ def process_real_payment(request):
                     payment_method_types=['card'],
                     line_items=[{
                         'price_data': {
-                            'currency': 'inr',
+                            'currency': 'usd', # Comma add kar diya hai
                             'product_data': {
                                 'name': product.name,
                             },
-                            'unit_amount': int(product.price_inr * 100),
+                            'unit_amount': int(product.price_usd * 100), # INR se USD
                         },
                         'quantity': 1,
                     }],
@@ -126,8 +124,8 @@ def process_real_payment(request):
                     "transactions": [{
                         "item_list": {
                             "items": [{
-                                "name": product.name,  # Dynamic Name
-                                "sku": f"workbook_{product.id}", # Dynamic SKU
+                                "name": product.name,
+                                "sku": f"workbook_{product.id}",
                                 "price": usd_amount,
                                 "currency": "USD",
                                 "quantity": 1
@@ -137,7 +135,7 @@ def process_real_payment(request):
                             "total": usd_amount,
                             "currency": "USD"
                         },
-                        "description": f"{product.name} PDF Purchase" # Dynamic description
+                        "description": f"{product.name} PDF Purchase"
                     }]
                 })
 
@@ -162,7 +160,6 @@ def process_real_payment(request):
             return JsonResponse({"status": "error", "message": str(e)}, status=400)
             
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
-
 
 # ==================== EMAIL HELPER FUNCTION ====================
 

@@ -9,8 +9,9 @@ protected_storage = FileSystemStorage(location=os.path.join(settings.BASE_DIR, '
 class Product(models.Model):
     name = models.CharField(max_length=200, default="Kids Learning Workbook")
     pdf_file = models.FileField(upload_to='books/', storage=protected_storage)
-    mrp_inr = models.DecimalField(max_digits=10, decimal_places=2, default=1999.00)
-    price_inr = models.DecimalField(max_digits=10, decimal_places=2, default=299.00)
+    
+    # Naye USD fields
+    mrp_usd = models.DecimalField(max_digits=10, decimal_places=2, default=25.00) 
     price_usd = models.DecimalField(max_digits=10, decimal_places=2, default=3.99)
     is_active = models.BooleanField(default=True)
 
@@ -37,14 +38,13 @@ class Order(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     
-    amount = models.DecimalField(max_digits=10, decimal_places=2, default=299.00) 
-    currency = models.CharField(max_length=10, default='INR')
+    # Amount aur Currency ab USD hogi
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=3.99) 
+    currency = models.CharField(max_length=10, default='USD')
     payment_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     
     payment_method = models.CharField(max_length=50, blank=True, null=True)
     transaction_id = models.CharField(max_length=255, blank=True, null=True)
-    
-    # Extra Razorpay, Stripe ids hata diye gaye hain
     
     download_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)

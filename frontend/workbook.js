@@ -230,12 +230,13 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch(`${CONFIG.BACKEND_URL}/product-details/`)
         .then(response => response.json())
         .then(data => {
-            if (data && data.price_inr) {
+            // Yahan price_usd check karna hai
+            if (data && data.price_usd) {
                 // Jin spans mein 'dynamic-price' class hai, unhe select karo
                 const priceElements = document.querySelectorAll('.dynamic-price');
                 priceElements.forEach(el => {
-                    // Yahan par dynamic price update ho jayega
-                    el.innerHTML = `Only ₹${data.price_inr}/- `;
+                    // Yahan par dynamic price update ho jayega ($ symbol ke sath)
+                    el.innerHTML = `Only $${data.price_usd}/- `;
                 });
             }
         })

@@ -63,6 +63,8 @@ async function payNow() {
         `;
     }
 }
+
+
 // =========================================
 // --- DYNAMIC PRICE FETCH LOGIC ---
 // =========================================
@@ -72,18 +74,18 @@ document.addEventListener("DOMContentLoaded", async function() {
         const response = await fetch(`${BACKEND_URL}/product-details/`);
         const data = await response.json();
         
-        // Check karein ki data mein selling price aur mrp dono hain ya nahi
-        if (data && data.price_inr && data.mrp_inr) {
-            const finalPrice = parseFloat(data.price_inr);
-            const basePrice = parseFloat(data.mrp_inr); // <-- Backend se aayi hui MRP
+        // Check karein ki data mein USD price aur mrp dono hain ya nahi
+        if (data && data.price_usd && data.mrp_usd) {
+            const finalPrice = parseFloat(data.price_usd);
+            const basePrice = parseFloat(data.mrp_usd);
             
-            // Discount amount dynamically calculate ho raha hai
-            const discountAmount = basePrice - finalPrice;
+            // Discount amount dynamically calculate ho raha hai (USD ke hisaab se)
+            const discountAmount = (basePrice - finalPrice).toFixed(2);
 
-            // HTML elements ko update karo
-            document.getElementById('base-price').innerText = `₹${basePrice}`;
-            document.getElementById('discount-price').innerText = `- ₹${discountAmount}`;
-            document.getElementById('final-price').innerText = `₹${finalPrice}`;
+            // HTML elements ko update karo ($ symbol ke saath)
+            document.getElementById('base-price').innerText = `$${basePrice.toFixed(2)}`;
+            document.getElementById('discount-price').innerText = `- $${discountAmount}`;
+            document.getElementById('final-price').innerText = `$${finalPrice.toFixed(2)}`;
         }
     } catch (error) {
         console.error("Error fetching dynamic price on checkout:", error);
