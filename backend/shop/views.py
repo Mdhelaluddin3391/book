@@ -9,6 +9,8 @@ from django.http import JsonResponse, FileResponse, Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from .models import ContactMessage, Order, Product 
+from django.core.mail import EmailMultiAlternatives
+import os
 
 
 logger = logging.getLogger(__name__)
@@ -162,8 +164,7 @@ def process_real_payment(request):
 
 def send_order_email(order):
     """
-    Customer ko successful payment ke baad ek professional HTML email bhejta hai.
-    Yeh kisi bhi product ke liye automatically kaam karega.
+    Customer ko successful payment ke baad ek professional HTML email bhejta hai aur PDF attach karta hai.
     """
     subject = f'Your {order.product.name} is Ready for Download! 🚀'
     download_link = f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}"
@@ -178,15 +179,10 @@ def send_order_email(order):
             <div style="padding: 30px; color: #333333;">
                 <h2 style="color: #2C3E50; font-size: 20px;">Hello {order.name},</h2>
                 <p style="font-size: 16px; line-height: 1.6;">Thank you for your purchase! Your payment was successful, and your <strong>{order.product.name}</strong> is ready.</p>
-                <p style="font-size: 16px; line-height: 1.6;">Click the button below to download your secure PDF file instantly:</p>
+                <p style="font-size: 16px; line-height: 1.6;">We have attached your Workbook to this email. You can also click the button below to download it:</p>
                 <div style="text-align: center; margin: 35px 0;">
                     <a href="{download_link}" style="background-color: #E74C3C; color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 5px; font-size: 18px; font-weight: bold; display: inline-block;">📥 Download Workbook Now</a>
                 </div>
-                <p style="font-size: 14px; color: #777777;"><em>Note: This is a secure, unique link generated only for you. Please do not share it with others.</em></p>
-            </div>
-            <div style="background-color: #f9f9f9; padding: 15px; text-align: center; font-size: 12px; color: #888888; border-top: 1px solid #eeeeee;">
-                &copy; 2026 Kids Store. All rights reserved.<br>
-                Need help? Just reply to this email.
             </div>
         </div>
     </body>
@@ -197,24 +193,38 @@ def send_order_email(order):
     Hello {order.name},
     
     Thank you for your purchase! Your {order.product.name} is ready.
-    Download your workbook here: {download_link}
+    We have attached the PDF to this email. 
+    You can also download your workbook here: {download_link}
     
     Need help? Just reply to this email.
     """
     
     try:
-        send_mail(
+        # Email Message create karein
+        msg = EmailMultiAlternatives(
             subject=subject,
-            message=plain_message,
+            body=plain_message,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[order.email],
-            html_message=html_message,
-            fail_silently=False,
+            to=[order.email]
         )
-        logger.info(f"HTML Email successfully sent to {order.email}")
+        
+        # HTML content attach karein
+        msg.attach_alternative(html_message, "text/html")
+        
+        # 📌 MAIN FIX: PDF File ko attach karein
+        if order.product and order.product.pdf_file:
+            pdf_path = order.product.pdf_file.path
+            if os.path.exists(pdf_path):
+                msg.attach_file(pdf_path)
+            else:
+                logger.warning(f"PDF attachment failed: File not found at {pdf_path}")
+
+        # Email send karein
+        msg.send(fail_silently=False)
+        logger.info(f"HTML Email with PDF successfully sent to {order.email}")
+        
     except Exception as e:
         logger.error(f"Failed to send HTML email to {order.email}. Error: {str(e)}")
-
 
 @csrf_exempt
 def stripe_webhook(request):
