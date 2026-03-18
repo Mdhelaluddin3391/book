@@ -128,3 +128,19 @@
         max-width: 100%;
     }
 }
+
+
+/*mini futer style*/
+
+/* =========================================
+   MINI FOOTER (For Checkout & Thank You Pages)
+   ========================================= */
+.site-footer.mini-footer {
+    padding: 20px 5%; /* Upar aur niche ki extra 80px padding kam kar di */
+}
+
+.site-footer.mini-footer .footer-bottom {
+    margin-top: 0; /* Khali jagah ka margin hata diya */
+    padding-top: 0;
+    border-top: none; /* Upar ki line hata di kyunki koi content nahi hai uske upar */
+}
