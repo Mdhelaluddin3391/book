@@ -37,14 +37,25 @@ body {
 /* =========================================
    TOP NAVIGATION
    ========================================= */
+/* =========================================
+   TOP NAVIGATION (Dark Blue Glass Effect)
+   ========================================= */
 .top-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 5%;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-sm);
+    
+    /* Dark Blue color with 85% opacity for glass effect */
+    background-color: rgba(6, 3, 70, 0.50); 
+    
+    /* Blur effect for the glassmorphism */
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px); /* Safari support */
+    
+    /* Subtle shadow at the bottom */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+    
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -53,7 +64,7 @@ body {
 .nav-brand {
     font-size: 24px;
     font-weight: 800;
-    color: var(--c-primary);
+    color: var(--c-white); /* Text color ko white karna zaroori hai dark background par */
     letter-spacing: -0.5px;
 }
 
