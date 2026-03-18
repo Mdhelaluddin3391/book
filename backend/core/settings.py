@@ -14,7 +14,8 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
@@ -74,12 +75,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
     'default': dj_database_url.config(
-        # Agar DATABASE_URL env var nahi hai (jaise local par), toh sqlite use karega
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600
     )
@@ -125,10 +123,8 @@ STATIC_URL = 'static/'
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 
-# PayPal ke credentials (jab aap PayPal developer account banayenge tab milenge)
 PAYPAL_CLIENT_ID = os.getenv('PAYPAL_CLIENT_ID')
 PAYPAL_SECRET = os.getenv('PAYPAL_SECRET')
-# PayPal ka mode control karne ke liye
 PAYPAL_MODE = os.getenv('PAYPAL_MODE', 'sandbox')
 
 

@@ -10,23 +10,18 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from .models import ContactMessage, Order, Product 
 
-# ==================== INITIALIZATION & CONFIG ====================
 
-# Set up logging for industry-level error/info tracking
 logger = logging.getLogger(__name__)
 
-# Stripe Setup
 stripe.api_key = getattr(settings, 'STRIPE_SECRET_KEY', '')
 
-# PayPal Setup
 paypalrestsdk.configure({
-    "mode": getattr(settings, 'PAYPAL_MODE', 'sandbox'),  # Dynamic mode from .env
+    "mode": getattr(settings, 'PAYPAL_MODE', 'sandbox'),  
     "client_id": getattr(settings, 'PAYPAL_CLIENT_ID', ''),
     "client_secret": getattr(settings, 'PAYPAL_SECRET', '')
 })
 
 def get_product_details(request):
-    # Saari products fetch karein (active aur coming soon dono)
     products = Product.objects.all()
     
     products_data = []
@@ -38,7 +33,7 @@ def get_product_details(request):
             "image_url": product.image_url,
             "mrp_usd": product.mrp_usd,
             "price_usd": product.price_usd,
-            "is_active": product.is_active # Isse frontend decide karega ki "Buy" dikhana hai ya "Coming Soon"
+            "is_active": product.is_active
         })
         
     return JsonResponse({"products": products_data})
@@ -66,9 +61,8 @@ def process_real_payment(request):
         try:
             data = json.loads(request.body)
             method = data.get('payment_method', 'Card')
-            product_id = data.get('product_id') # Frontend se specific product ka ID lenge
+            product_id = data.get('product_id') 
             
-            # ✅ UPDATE: Agar frontend ne product_id bheja hai toh usko lo, warna pehla active product le lo (fallback)
             if product_id:
                 product = Product.objects.filter(id=product_id, is_active=True).first()
             else:
@@ -77,7 +71,6 @@ def process_real_payment(request):
             if not product:
                 return JsonResponse({"status": "error", "message": "Product currently unavailable."}, status=404)
 
-            # Create Order (Status remains 'Pending')
             order = Order.objects.create(
                 product=product,
                 name=data.get('name'), 
@@ -89,7 +82,6 @@ def process_real_payment(request):
                 payment_status='Pending' 
             )
 
-            # --- STRIPE PAYMENT CHECKOUT ---
             if method == 'Card':
                 checkout_session = stripe.checkout.Session.create(
                     payment_method_types=['card'],
@@ -97,7 +89,7 @@ def process_real_payment(request):
                         'price_data': {
                             'currency': 'usd',
                             'product_data': {
-                                'name': product.name, # Yahan specific product ka naam jayega
+                                'name': product.name,
                             },
                             'unit_amount': int(product.price_usd * 100), 
                         },
@@ -116,7 +108,6 @@ def process_real_payment(request):
 
                 return JsonResponse({"status": "success", "payment_url": checkout_session.url})
 
-            # --- PAYPAL PAYMENT CHECKOUT ---
             elif method == 'PayPal':
                 usd_amount = str(product.price_usd)
                 
@@ -132,7 +123,7 @@ def process_real_payment(request):
                     "transactions": [{
                         "item_list": {
                             "items": [{
-                                "name": product.name, # Specific product
+                                "name": product.name,
                                 "sku": f"product_{product.id}",
                                 "price": usd_amount,
                                 "currency": "USD",
@@ -169,7 +160,6 @@ def process_real_payment(request):
             
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
-# ==================== EMAIL HELPER FUNCTION ====================
 def send_order_email(order):
     """
     Customer ko successful payment ke baad ek professional HTML email bhejta hai.
@@ -225,7 +215,6 @@ def send_order_email(order):
     except Exception as e:
         logger.error(f"Failed to send HTML email to {order.email}. Error: {str(e)}")
 
-# ==================== WEBHOOKS ====================
 
 @csrf_exempt
 def stripe_webhook(request):
@@ -253,7 +242,7 @@ def stripe_webhook(request):
                     order.payment_status = 'Completed'
                     order.save()
                     logger.info(f"Stripe Order {order.id} Successfully Completed!")
-                    send_order_email(order) # Stripe ke success par email
+                    send_order_email(order)
             except Order.DoesNotExist:
                 logger.warning(f"Stripe Webhook: Order {order_id} not found.")
 
@@ -277,7 +266,7 @@ def paypal_webhook(request):
                         order.payment_status = 'Completed'
                         order.save()
                         logger.info(f"PayPal Order {order.id} Successfully Completed!")
-                        send_order_email(order) # PayPal Webhook aane par email
+                        send_order_email(order) 
                 except Order.DoesNotExist:
                     logger.warning(f"PayPal Webhook: Order with transaction ID {parent_payment_id} not found.")
 
@@ -287,12 +276,9 @@ def paypal_webhook(request):
         logger.error(f"PayPal Webhook Error: {str(e)}")
         return HttpResponse(status=400)
     
-# ==================== SECURE DOWNLOAD API ====================
 def secure_download_api(request, token):
-    # Retrieve order based on download token
     order = get_object_or_404(Order, download_token=token)
     
-    # Authorize download only if payment is completed
     if order.payment_status != 'Completed':
         return JsonResponse({
             "error": "Access Denied. Aapki payment abhi tak verify nahi hui hai."
@@ -304,9 +290,7 @@ def secure_download_api(request, token):
     
     filepath = product.pdf_file.path
 
-    # Verify physical file existence before sending
     if os.path.exists(filepath):
-        # Customer ko download karte waqt file ka naam clean dikhega
         safe_filename = product.name.replace(" ", "_") + ".pdf"
         return FileResponse(open(filepath, 'rb'), as_attachment=True, filename=safe_filename)
     else:
@@ -315,7 +299,6 @@ def secure_download_api(request, token):
     
 @csrf_exempt
 def execute_paypal_payment(request):
-    # CORS Preflight (OPTIONS) request ko pass karne ke liye
     if request.method == 'OPTIONS':
         return JsonResponse({'status': 'ok'})
 
@@ -326,20 +309,16 @@ def execute_paypal_payment(request):
             payer_id = data.get('PayerID')
             token = data.get('token')
             
-            # PayPal se payment find karein
             payment = paypalrestsdk.Payment.find(payment_id)
             
-            # Payment Execute karein
             if payment.execute({"payer_id": payer_id}):
                 order = get_object_or_404(Order, download_token=token)
                 
-                # Order ka status update karein
                 if order.payment_status != 'Completed':
                     order.payment_status = 'Completed'
                     order.save()
                     print(f"PayPal Order {order.id} Successfully Executed & Completed!")
                     
-                    # ✅ FIX: Yahan Par Email Function Add Kar Diya Gaya Hai
                     send_order_email(order)
                     
                 return JsonResponse({"status": "success"})
@@ -348,7 +327,6 @@ def execute_paypal_payment(request):
                 return JsonResponse({"status": "error", "message": "Payment execution failed."})
                 
         except Exception as e:
-            # Code crash hone se bachega aur exact error frontend ko dega
             print(f"Execute PayPal Exception: {str(e)}")
             return JsonResponse({"status": "error", "message": str(e)})
             
