@@ -170,10 +170,10 @@ def process_real_payment(request):
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
 # ==================== EMAIL HELPER FUNCTION ====================
-
 def send_order_email(order):
     """
     Customer ko successful payment ke baad ek professional HTML email bhejta hai.
+    Yeh kisi bhi product ke liye automatically kaam karega.
     """
     subject = f'Your {order.product.name} is Ready for Download! 🚀'
     download_link = f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}"
@@ -183,11 +183,11 @@ def send_order_email(order):
     <body style="font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
             <div style="background-color: #2C3E50; padding: 20px; text-align: center; border-bottom: 4px solid #E74C3C;">
-                <h1 style="color: #F1C40F; margin: 0; font-size: 24px;">📚 Kids Workbook</h1>
+                <h1 style="color: #F1C40F; margin: 0; font-size: 24px;">📚 {order.product.name}</h1>
             </div>
             <div style="padding: 30px; color: #333333;">
                 <h2 style="color: #2C3E50; font-size: 20px;">Hello {order.name},</h2>
-                <p style="font-size: 16px; line-height: 1.6;">Thank you for your purchase! Your payment was successful, and your <strong>Ultimate Kids Workbook</strong> is ready.</p>
+                <p style="font-size: 16px; line-height: 1.6;">Thank you for your purchase! Your payment was successful, and your <strong>{order.product.name}</strong> is ready.</p>
                 <p style="font-size: 16px; line-height: 1.6;">Click the button below to download your secure PDF file instantly:</p>
                 <div style="text-align: center; margin: 35px 0;">
                     <a href="{download_link}" style="background-color: #E74C3C; color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 5px; font-size: 18px; font-weight: bold; display: inline-block;">📥 Download Workbook Now</a>
@@ -195,7 +195,7 @@ def send_order_email(order):
                 <p style="font-size: 14px; color: #777777;"><em>Note: This is a secure, unique link generated only for you. Please do not share it with others.</em></p>
             </div>
             <div style="background-color: #f9f9f9; padding: 15px; text-align: center; font-size: 12px; color: #888888; border-top: 1px solid #eeeeee;">
-                &copy; 2026 Kids Workbook. All rights reserved.<br>
+                &copy; 2026 Kids Store. All rights reserved.<br>
                 Need help? Just reply to this email.
             </div>
         </div>
@@ -206,7 +206,7 @@ def send_order_email(order):
     plain_message = f"""
     Hello {order.name},
     
-    Thank you for your purchase! Your Ultimate Kids Workbook is ready.
+    Thank you for your purchase! Your {order.product.name} is ready.
     Download your workbook here: {download_link}
     
     Need help? Just reply to this email.
@@ -224,7 +224,6 @@ def send_order_email(order):
         logger.info(f"HTML Email successfully sent to {order.email}")
     except Exception as e:
         logger.error(f"Failed to send HTML email to {order.email}. Error: {str(e)}")
-
 
 # ==================== WEBHOOKS ====================
 
@@ -300,14 +299,15 @@ def secure_download_api(request, token):
         }, status=403)
 
     product = order.product
-    if not product:
-        raise Http404("Product not found in database.")
+    if not product or not product.pdf_file:
+        raise Http404("Product ya uski file database mein nahi mili.")
 
     import os
     from django.conf import settings
     
-    # NAYA LOGIC: Database ke galat naam ko ignore karke direct asli file ka naam 'ReadMap.pdf' daalenge
-    filepath = os.path.join(settings.BASE_DIR, 'protected_media', 'books', 'ReadMap.pdf')
+    # NAYA LOGIC: Ab direct database se product ki file ka actual path uthayega
+    # Chahe wo MathBook.pdf ho ya DrawingBook.pdf
+    filepath = product.pdf_file.path
 
     # Verify physical file existence before sending
     if os.path.exists(filepath):
@@ -316,7 +316,7 @@ def secure_download_api(request, token):
         return FileResponse(open(filepath, 'rb'), as_attachment=True, filename=safe_filename)
     else:
         logger.error(f"File missing on server: {filepath}")
-        raise Http404(f"File abhi bhi nahi mili! Path check karein: {filepath}")
+        raise Http404(f"File server par nahi mili! Path check karein: {filepath}")
     
 @csrf_exempt
 def execute_paypal_payment(request):
