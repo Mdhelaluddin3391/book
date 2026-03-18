@@ -1,4 +1,10 @@
 /* ================= HERO SECTION ================= */
+
+html {
+    scroll-behavior: smooth;
+}
+
+
 .hero {
     background: linear-gradient(135deg, var(--c-dark) 0%, #1a252f 100%);
     color: var(--c-white);
@@ -163,4 +169,8 @@
 
 @media (max-width: 768px) {
     .hero h1 { font-size: 2.2rem; }
+}
+
+#workbooks {
+    scroll-margin-top: 90px; /* Aap isko apne navbar ki height ke hisaab se 80px, 90px ya 100px kar sakte hain */
 }
