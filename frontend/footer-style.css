@@ -1,40 +1,47 @@
 /* =========================================
-   FOOTER STYLES
+   FOOTER STYLES (Modern & Consistent Theme)
    ========================================= */
+
 .site-footer {
-    background-color: rgb(7, 19, 73); /* Match with var(--c-dark) from workbook.css */
-    color: #ffffff;
-    padding: 60px 20px 20px 20px;
-    font-family: 'Arial', sans-serif;
-    border-top: 4px solid #E74C3C; /* A nice warm red border on top */
+    background-color: var(--c-dark, #1E293B); /* Deep slate dark for premium feel */
+    color: var(--c-white, #FFFFFF);
+    padding: 80px 5% 30px;
+    font-family: 'Poppins', 'Arial', sans-serif;
+    border-top: 6px solid var(--c-action, #FF5A5F); /* Vibrant coral top border */
+    position: relative;
 }
 
 .footer-container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap; 
-    gap: 40px;
+    gap: 50px;
 }
 
 .footer-brand {
     flex: 1;
-    min-width: 250px;
+    min-width: 280px;
 }
 
 .footer-brand h3 {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: #F1C40F; /* Yellow Accent */
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--c-white, #FFFFFF);
+    letter-spacing: -0.5px;
+}
+
+.footer-brand h3 span {
+    color: var(--c-accent, #FFC107); /* Playful yellow touch for the brand name */
 }
 
 .footer-brand p {
-    color: #E0F7FA;
-    font-size: 14px;
-    line-height: 1.6;
-    max-width: 350px;
+    color: #94A3B8; /* Slate 400 for softer, readable text */
+    font-size: 15px;
+    line-height: 1.8;
+    max-width: 380px;
 }
 
 .footer-links {
@@ -43,10 +50,24 @@
 }
 
 .footer-links h4 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: var(--c-white, #FFFFFF);
+    position: relative;
+    display: inline-block;
+}
+
+/* Elegant line below the heading */
+.footer-links h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 40px;
+    height: 3px;
+    background-color: var(--c-action, #FF5A5F);
+    border-radius: 2px;
 }
 
 .footer-links ul {
@@ -55,36 +76,55 @@
 }
 
 .footer-links li {
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 
 .footer-links a {
-    color: #E0F7FA;
+    color: #94A3B8;
     text-decoration: none; 
-    font-size: 14px;
-    transition: color 0.3s ease, padding-left 0.3s ease;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
 }
 
+/* Modern hover effect for links */
 .footer-links a:hover {
-    color: #F1C40F; /* Yellow hover effect */
-    padding-left: 5px; 
+    color: var(--c-white, #FFFFFF);
+    transform: translateX(6px); /* Smoothly moves right on hover */
 }
 
 .footer-bottom {
-    max-width: 1000px;
-    margin: 40px auto 0;
-    padding-top: 20px;
+    max-width: 1200px;
+    margin: 60px auto 0;
+    padding-top: 25px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
 .footer-bottom p {
-    color: #bbbbbb;
-    font-size: 13px;
+    color: #64748B;
+    font-size: 14px;
 }
 
+/* =========================================
+   RESPONSIVE DESIGN FOR FOOTER
+   ========================================= */
 @media (max-width: 768px) {
+    .site-footer {
+        padding: 60px 5% 30px;
+    }
+    
     .footer-container {
         flex-direction: column;
+        gap: 40px;
+    }
+    
+    .footer-brand p {
+        max-width: 100%;
     }
 }

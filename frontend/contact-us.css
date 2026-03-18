@@ -1,83 +1,129 @@
+/* =========================================
+   CONTACT US PAGE STYLES (Modern & Consistent Theme)
+   ========================================= */
+
 .contact-wrap {
-    padding: 60px 20px;
+    padding: 80px 5%;
     background-color: var(--c-bg-light);
-    min-height: 70vh;
+    min-height: 75vh;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .contact-card {
-    max-width: 500px;
+    max-width: 550px;
     width: 100%;
     background: var(--c-white);
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    padding: 3rem;
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+    border-top: 8px solid var(--c-primary); /* Consistent premium feel */
 }
 
 .contact-card h1 {
-    color: var(--c-dark);
+    color: var(--c-primary);
     text-align: center;
     margin-bottom: 10px;
+    font-size: 2rem;
+    font-weight: 800;
 }
 
 .contact-card p.subtitle {
     text-align: center;
     color: var(--c-text-gray);
-    font-size: 14px;
-    margin-bottom: 30px;
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 1.8rem;
 }
 
 label {
     display: block;
     font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: var(--c-dark);
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+    color: var(--c-text-gray);
 }
 
 input,
 textarea {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 1.1rem 1.2rem;
+    border: 2px solid #E2E8F0;
+    border-radius: 16px;
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 1rem;
+    color: var(--c-dark);
+    background: #F8FAFC;
+    transition: all 0.3s ease;
 }
 
 textarea {
-    min-height: 120px;
+    min-height: 150px;
     resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--c-primary);
+    background: var(--c-white);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); /* Soft glowing focus ring */
 }
 
 .btn-submit {
     width: 100%;
-    padding: 12px;
-    background-color: var(--c-action);
+    background: linear-gradient(135deg, var(--c-action) 0%, #FF3338 100%);
     color: var(--c-white);
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 600;
+    border-radius: 50px; /* Pill shape */
+    padding: 1.2rem;
+    font-size: 1.2rem;
+    font-weight: 800;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 25px rgba(255, 90, 95, 0.4);
+    margin-top: 1rem;
 }
 
 .btn-submit:hover {
-    background-color: var(--c-action-hover);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(255, 90, 95, 0.5);
+    background: linear-gradient(135deg, #FF3338 0%, var(--c-action) 100%);
 }
 
 .info {
     text-align: center;
-    margin-top: 30px;
-    font-size: 14px;
+    margin-top: 2.5rem;
+    font-size: 0.95rem;
     color: var(--c-text-gray);
-    border-top: 1px solid #eee;
-    padding-top: 20px;
+    border-top: 1px solid #E2E8F0;
+    padding-top: 1.5rem;
+}
+
+.info a {
+    color: var(--c-primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.info a:hover {
+    color: var(--c-action);
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 480px) {
+    .contact-card {
+        padding: 2rem;
+    }
+    
+    .contact-card h1 {
+        font-size: 1.8rem;
+    }
 }
