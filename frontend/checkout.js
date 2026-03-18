@@ -63,7 +63,6 @@ async function payNow() {
         `;
     }
 }
-
 // =========================================
 // --- DYNAMIC PRICE FETCH LOGIC ---
 // =========================================
@@ -73,12 +72,13 @@ document.addEventListener("DOMContentLoaded", async function() {
         const response = await fetch(`${BACKEND_URL}/product-details/`);
         const data = await response.json();
         
-        if (data && data.price_inr) {
-            const finalPrice = data.price_inr;
+        // Check karein ki data mein selling price aur mrp dono hain ya nahi
+        if (data && data.price_inr && data.mrp_inr) {
+            const finalPrice = parseFloat(data.price_inr);
+            const basePrice = parseFloat(data.mrp_inr); // <-- Backend se aayi hui MRP
             
-            // Dummy logic: Base price hamesha final price se 1700 zyada dikhane ke liye (Aap isko apne hisaab se change kar sakte hain)
-            const discountAmount = 1700;
-            const basePrice = finalPrice + discountAmount;
+            // Discount amount dynamically calculate ho raha hai
+            const discountAmount = basePrice - finalPrice;
 
             // HTML elements ko update karo
             document.getElementById('base-price').innerText = `₹${basePrice}`;

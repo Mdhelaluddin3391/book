@@ -32,17 +32,16 @@ paypalrestsdk.configure({
 })
 
 # ==================== API VIEWS ====================
-
 def get_product_details(request):
     product = Product.objects.filter(is_active=True).first()
     if product:
         return JsonResponse({
             "name": product.name,
+            "mrp_inr": product.mrp_inr, 
             "price_inr": product.price_inr,
             "price_usd": product.price_usd
         })
     return JsonResponse({"error": "Product not found"}, status=404)
-
 
 @csrf_exempt
 def contact_api(request):

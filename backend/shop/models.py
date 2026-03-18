@@ -9,6 +9,7 @@ protected_storage = FileSystemStorage(location=os.path.join(settings.BASE_DIR, '
 class Product(models.Model):
     name = models.CharField(max_length=200, default="Kids Learning Workbook")
     pdf_file = models.FileField(upload_to='books/', storage=protected_storage)
+    mrp_inr = models.DecimalField(max_digits=10, decimal_places=2, default=1999.00)
     price_inr = models.DecimalField(max_digits=10, decimal_places=2, default=299.00)
     price_usd = models.DecimalField(max_digits=10, decimal_places=2, default=3.99)
     is_active = models.BooleanField(default=True)
