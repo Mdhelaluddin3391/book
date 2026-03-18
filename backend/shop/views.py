@@ -32,14 +32,22 @@ paypalrestsdk.configure({
 })
 
 def get_product_details(request):
-    product = Product.objects.filter(is_active=True).first()
-    if product:
-        return JsonResponse({
+    # Saari products fetch karein (active aur coming soon dono)
+    products = Product.objects.all()
+    
+    products_data = []
+    for product in products:
+        products_data.append({
+            "id": product.id,
             "name": product.name,
+            "description": product.description,
+            "image_url": product.image_url,
             "mrp_usd": product.mrp_usd,
-            "price_usd": product.price_usd
+            "price_usd": product.price_usd,
+            "is_active": product.is_active # Isse frontend decide karega ki "Buy" dikhana hai ya "Coming Soon"
         })
-    return JsonResponse({"error": "Product not found"}, status=404)
+        
+    return JsonResponse({"products": products_data})
 
 @csrf_exempt
 def contact_api(request):

@@ -9,7 +9,8 @@ protected_storage = FileSystemStorage(location=os.path.join(settings.BASE_DIR, '
 class Product(models.Model):
     name = models.CharField(max_length=200, default="Kids Learning Workbook")
     pdf_file = models.FileField(upload_to='books/', storage=protected_storage)
-    
+    description = models.TextField(default="500+ pages of logic activities for ages 3-8.", blank=True)
+    image_url = models.URLField(default="https://crevvo.com/wp-content/uploads/2024/02/14000-Kids-Worksheets.webp", blank=True)
     # Naye USD fields
     mrp_usd = models.DecimalField(max_digits=10, decimal_places=2, default=25.00) 
     price_usd = models.DecimalField(max_digits=10, decimal_places=2, default=3.99)
