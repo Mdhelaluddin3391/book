@@ -12,7 +12,8 @@ body {
 }
 
 main.main-content {
-    flex: 1; /* Pushes footer to the bottom */
+    flex: 1;
+    /* Pushes footer to the bottom */
     background-color: var(--c-bg-light, #F8FAFC);
 }
 
@@ -21,7 +22,8 @@ main.main-content {
    ========================================= */
 .policy-header {
     background: linear-gradient(135deg, var(--c-primary, #120d6e) 0%, #045191 100%);
-    padding: 60px 20px 80px; /* Extra bottom padding for overlap effect */
+    padding: 60px 20px 80px;
+    /* Extra bottom padding for overlap effect */
     text-align: center;
     color: var(--c-white, #FFFFFF);
 }
@@ -40,11 +42,12 @@ main.main-content {
 
 .policy-container {
     max-width: 900px;
-    margin: -50px auto 60px; /* Overlaps the header slightly for a modern look */
+    margin: -50px auto 60px;
+    /* Overlaps the header slightly for a modern look */
     background: var(--c-white, #FFFFFF);
     padding: 40px 50px;
     border-radius: 20px;
-    box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0,0,0,0.1));
+    box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
     position: relative;
     z-index: 10;
 }
@@ -63,7 +66,7 @@ main.main-content {
     margin-top: 0;
 }
 
-.policy-container p, 
+.policy-container p,
 .policy-container li {
     font-size: 16px;
     color: var(--c-text-gray, #475569);
@@ -95,8 +98,9 @@ main.main-content {
     text-align: center;
     padding: 50px 40px;
     border-radius: 24px;
-    box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0,0,0,0.1));
-    border-top: 8px solid var(--c-secondary, #10B981); /* Success Green */
+    box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
+    border-top: 8px solid var(--c-secondary, #10B981);
+    /* Success Green */
 }
 
 .success-card .icon {
@@ -120,6 +124,27 @@ main.main-content {
     margin-bottom: 30px;
 }
 
+/* SVGs ko theek se align karne ke liye thodi styling */
+.success-card .icon svg {
+    width: 80px;
+    height: 80px;
+    color: var(--c-secondary, #10B981);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    /* Text aur icon ke beech gap */
+}
+
+.btn-download svg {
+    width: 24px;
+    height: 24px;
+}
+
 .btn-download {
     background: linear-gradient(135deg, var(--c-secondary, #10B981) 0%, #059669 100%);
     color: white;
@@ -139,8 +164,15 @@ main.main-content {
 }
 
 @keyframes popIn {
-    0% { transform: scale(0); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 @media (max-width: 600px) {
@@ -148,6 +180,7 @@ main.main-content {
         padding: 30px 20px;
         margin: -30px 15px 40px;
     }
+
     .success-card {
         padding: 40px 20px;
     }
