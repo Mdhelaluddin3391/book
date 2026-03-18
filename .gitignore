@@ -11,7 +11,7 @@ backend/.env
 .env
 
 # Python Cache Files (Ye __pycache__ ko rokega)
-__pycache__/
+backend/__pycache__/
 *.py[cod]
 *$py.class
 
