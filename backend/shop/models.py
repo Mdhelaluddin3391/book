@@ -4,7 +4,8 @@ from django.conf import settings
 import uuid
 import os
 
-protected_storage = FileSystemStorage(location=os.path.join(settings.BASE_DIR, 'protected_media'))
+PROTECTED_MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'protected_media')
+protected_storage = FileSystemStorage(location=PROTECTED_MEDIA_ROOT)
 
 class Product(models.Model):
     name = models.CharField(max_length=200, default="Kids Learning Workbook")
