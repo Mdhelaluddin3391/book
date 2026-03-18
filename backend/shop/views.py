@@ -8,7 +8,12 @@ from django.conf import settings
 from django.http import JsonResponse, FileResponse, Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
-
+import json
+import paypalrestsdk
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+from .models import Order
 from .models import ContactMessage, Order, Product 
 
 # ==================== INITIALIZATION & CONFIG ====================
@@ -309,9 +314,12 @@ def secure_download_api(request, token):
         logger.error(f"File missing on server: {filepath}")
         raise Http404(f"File abhi bhi nahi mili! Path check karein: {filepath}")
     
-
 @csrf_exempt
 def execute_paypal_payment(request):
+    # CORS Preflight (OPTIONS) request ko pass karne ke liye
+    if request.method == 'OPTIONS':
+        return JsonResponse({'status': 'ok'})
+
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -330,16 +338,19 @@ def execute_paypal_payment(request):
                 if order.payment_status != 'Completed':
                     order.payment_status = 'Completed'
                     order.save()
-                    logger.info(f"PayPal Order {order.id} Successfully Executed & Completed!")
-                    send_order_email(order) # Customer ko email bhej dein
+                    print(f"PayPal Order {order.id} Successfully Executed & Completed!")
+                    
+                    # Note: Agar aapke paas customer ko email bhejne ka function hai 
+                    # toh aap usey yahan call kar sakte hain.
                     
                 return JsonResponse({"status": "success"})
             else:
-                logger.error(f"PayPal Execute Error: {payment.error}")
+                print(f"PayPal Execute Error: {payment.error}")
                 return JsonResponse({"status": "error", "message": "Payment execution failed."})
                 
         except Exception as e:
-            logger.error(f"Execute PayPal Exception: {str(e)}")
+            # Code crash hone se bachega aur exact error frontend ko dega
+            print(f"Execute PayPal Exception: {str(e)}")
             return JsonResponse({"status": "error", "message": str(e)})
             
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
