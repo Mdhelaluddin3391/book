@@ -1,4 +1,10 @@
+const isLocalhost =
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === 'localhost';
 
 const CONFIG = {
-    BACKEND_URL:"https://book-27zu.onrender.com/api"
+    BACKEND_URL: isLocalhost
+        ? "http://127.0.0.1:8000/api"
+        : "https://book-27zu.onrender.com/api"
 };
+

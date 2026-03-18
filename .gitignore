@@ -25,3 +25,5 @@ media/
 # OS Generated Files
 .DS_Store
 Thumbs.db
+
+frontend/config.js
