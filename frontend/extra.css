@@ -21,7 +21,7 @@ main.main-content {
    POLICY PAGES (Privacy, Terms, Refund)
    ========================================= */
 .policy-header {
-    background: linear-gradient(135deg, var(--c-primary, #120d6e) 0%, #045191 100%);
+    background: linear-gradient(135deg, var(--c-primary, #120d6e) 0%, #030f77 100%);
     padding: 60px 20px 80px;
     /* Extra bottom padding for overlap effect */
     text-align: center;
