@@ -1,173 +1,154 @@
+/* =========================================
+   EXTRA PAGES STYLES (Policies & Thank You)
+   Matches the Modern & Trustworthy Theme
+   ========================================= */
+
+/* Ensure the page takes full height so footer stays at bottom */
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--c-bg-alt);
-    /* Body ko column flex banayein taaki Nav top pe rahe aur Footer bottom pe */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     margin: 0;
 }
 
-.success-card {
-    background: var(--c-white);
-    max-width: 550px;
-    width: 90%;
+main.main-content {
+    flex: 1; /* Pushes footer to the bottom */
+    background-color: var(--c-bg-light, #F8FAFC);
+}
+
+/* =========================================
+   POLICY PAGES (Privacy, Terms, Refund)
+   ========================================= */
+.policy-header {
+    background: linear-gradient(135deg, var(--c-primary, #120d6e) 0%, #045191 100%);
+    padding: 60px 20px 80px; /* Extra bottom padding for overlap effect */
     text-align: center;
-    padding: 50px 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-top: 6px solid #27ae60;
-    /* margin: auto; is card ko horizontally aur vertically center kar dega */
-    margin: auto;
+    color: var(--c-white, #FFFFFF);
 }
 
-.icon {
-    font-size: 60px;
-    color: #27ae60;
-    margin-bottom: 20px;
-}
-
-h1 {
-    color: var(--c-dark);
+.policy-header h1 {
+    font-size: clamp(28px, 5vw, 42px);
     font-weight: 800;
-    font-size: 26px;
+    color: var(--c-accent, #FFC107);
+    margin-bottom: 10px;
+}
+
+.policy-header p {
+    font-size: 16px;
+    color: #E0E7FF;
+}
+
+.policy-container {
+    max-width: 900px;
+    margin: -50px auto 60px; /* Overlaps the header slightly for a modern look */
+    background: var(--c-white, #FFFFFF);
+    padding: 40px 50px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0,0,0,0.1));
+    position: relative;
+    z-index: 10;
+}
+
+.policy-container h2 {
+    color: var(--c-dark, #08115e);
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--c-bg-alt, #F0F9FF);
+    padding-bottom: 10px;
+}
+
+.policy-container h2:first-child {
+    margin-top: 0;
+}
+
+.policy-container p, 
+.policy-container li {
+    font-size: 16px;
+    color: var(--c-text-gray, #475569);
+    line-height: 1.8;
     margin-bottom: 15px;
 }
 
-p {
-    color: var(--c-text-gray);
-    font-size: 15px;
+.policy-container ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+/* =========================================
+   THANK YOU PAGE (Success Card)
+   ========================================= */
+.success-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    min-height: 70vh;
+    background-color: var(--c-bg-alt, #F0F9FF);
+}
+
+.success-card {
+    background: var(--c-white, #FFFFFF);
+    max-width: 550px;
+    width: 100%;
+    text-align: center;
+    padding: 50px 40px;
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0,0,0,0.1));
+    border-top: 8px solid var(--c-secondary, #10B981); /* Success Green */
+}
+
+.success-card .icon {
+    font-size: 70px;
+    color: var(--c-secondary, #10B981);
+    margin-bottom: 20px;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.success-card h1 {
+    color: var(--c-dark, #08115e);
+    font-weight: 800;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.success-card p {
+    color: var(--c-text-gray, #475569);
+    font-size: 16px;
     line-height: 1.6;
     margin-bottom: 30px;
 }
 
 .btn-download {
-    background-color: #27ae60;
+    background: linear-gradient(135deg, var(--c-secondary, #10B981) 0%, #059669 100%);
     color: white;
-    padding: 15px 30px;
+    padding: 16px 35px;
     text-decoration: none;
-    border-radius: 8px;
-    font-weight: bold;
+    border-radius: 50px;
+    font-weight: 700;
     font-size: 18px;
     display: inline-block;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
 }
 
 .btn-download:hover {
-    background-color: #219150;
     transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(16, 185, 129, 0.4);
 }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
-.container {
-    max-width: 800px;
-    margin: 40px auto;
-    background: #fff;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-h1 {
-    color: #17232e;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-h2 {
-    color: #2c2c2c;
-    font-size: 20px;
-    margin-top: 30px;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 5px;
-}
-
-p {
-    font-size: 15px;
-    margin-bottom: 15px;
-    color: #555;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 800px;
-    margin: 40px auto;
-    background: #fff;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-h1 {
-    color: #17232e;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-h2 {
-    color: #2c2c2c;
-    font-size: 20px;
-    margin-top: 30px;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 5px;
-}
-
-p,
-li {
-    font-size: 15px;
-    margin-bottom: 15px;
-    color: #555;
-}
-
-.page-header {
-    background: var(--c-dark);
-    padding: 40px 20px;
-    text-align: center;
-    color: var(--c-white);
-}
-
-.page-header h1 {
-    color: var(--c-accent);
-    margin: 0;
-}
-
-.content-box {
-    max-width: 800px;
-    margin: 40px auto;
-    background: var(--c-white);
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.content-box h2 {
-    color: var(--c-dark);
-    font-size: 20px;
-    margin-top: 30px;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 5px;
-}
-
-.content-box p,
-.content-box li {
-    font-size: 15px;
-    margin-bottom: 15px;
-    color: var(--c-text-gray);
-    line-height: 1.6;
+@media (max-width: 600px) {
+    .policy-container {
+        padding: 30px 20px;
+        margin: -30px 15px 40px;
+    }
+    .success-card {
+        padding: 40px 20px;
+    }
 }
