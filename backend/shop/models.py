@@ -48,6 +48,8 @@ class Order(models.Model):
     
     download_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    download_count = models.IntegerField(default=0)
+    MAX_DOWNLOADS = 3
 
     def __str__(self):
         return f"Order {self.id} - {self.name} ({self.payment_status})"
