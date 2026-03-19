@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
          
             loadingStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying PayPal Payment... Please wait...';
 
-            fetch(`${CONFIG.BACKEND_URL}/execute-paypal/`, { 
+            fetch(`${CONFIG.BACKEND_URL}/complete-order/`, { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ paymentId: paymentId, PayerID: payerId, token: token })
