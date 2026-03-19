@@ -211,7 +211,7 @@ def send_order_email(order):
         # HTML content attach karein
         msg.attach_alternative(html_message, "text/html")
         
-        # 📌 MAIN FIX: PDF File ko attach karein
+        # PDF File ko attach karein
         if order.product and order.product.pdf_file:
             pdf_path = order.product.pdf_file.path
             if os.path.exists(pdf_path):
@@ -225,6 +225,7 @@ def send_order_email(order):
         
     except Exception as e:
         logger.error(f"Failed to send HTML email to {order.email}. Error: {str(e)}")
+        raise e  # <-- YAHAN YE LINE ADD KAREIN taaki admin panel ko error pata chal
 
 @csrf_exempt
 def stripe_webhook(request):
