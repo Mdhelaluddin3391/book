@@ -261,7 +261,10 @@ def stripe_webhook(request):
                     order.payment_status = 'Completed'
                     order.save()
                     logger.info(f"Stripe Order {order.id} Successfully Completed!")
-                    send_order_email(order)
+                    
+                    email_thread = threading.Thread(target=send_order_email, args=(order,))
+                    email_thread.start()
+                    
             except Order.DoesNotExist:
                 logger.warning(f"Stripe Webhook: Order {order_id} not found.")
 
