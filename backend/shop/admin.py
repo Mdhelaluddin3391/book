@@ -11,7 +11,7 @@ class ProductAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'email', 'amount', 'payment_status', 'created_at')
     list_filter = ('payment_status', 'created_at')
-    search_fields = ('name', 'email', 'transaction_id')
+    search_fields = ('id' , 'name', 'email', 'transaction_id')
     # manulay gmail send korar lge ikata
     actions = ['manual_resend_email']
 

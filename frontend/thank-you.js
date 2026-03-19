@@ -3,6 +3,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const token = urlParams.get('token');
     const paymentId = urlParams.get('paymentId');
     const payerId = urlParams.get('PayerID');
+    const orderId = urlParams.get('orderId');
+    const displayOrderId = document.getElementById('display-order-id');
+
+    if (orderId && displayOrderId) {
+        displayOrderId.innerText = "#" + orderId;
+    }
 
     const downloadBtn = document.querySelector('.btn-download');
 

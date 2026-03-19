@@ -98,7 +98,7 @@ def process_real_payment(request):
                         'quantity': 1,
                     }],
                     mode='payment',
-                    success_url=f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}",
+                    success_url=f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}&orderId={order.id}",
                     cancel_url=f"{settings.FRONTEND_URL}/checkout.html",
                     metadata={
                         'order_id': str(order.id)
@@ -119,7 +119,7 @@ def process_real_payment(request):
                         "payment_method": "paypal"
                     },
                     "redirect_urls": {
-                        "return_url": f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}",
+                        "return_url": f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}&orderId={order.id}",
                         "cancel_url": f"{settings.FRONTEND_URL}/checkout.html"
                     },
                     "transactions": [{
@@ -166,8 +166,8 @@ def send_order_email(order):
     """
     Customer ko successful payment ke baad ek professional HTML email bhejta hai aur PDF attach karta hai.
     """
-    subject = f'Your {order.product.name} is Ready for Download! '
-    download_link = f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}"
+    subject = f'Order #{order.id} Confirmed: Your {order.product.name} is Ready!'
+    download_link = f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}&orderId={order.id}"
     
     html_message = f"""
     <html>
@@ -178,7 +178,12 @@ def send_order_email(order):
             </div>
             <div style="padding: 30px; color: #333333;">
                 <h2 style="color: #2C3E50; font-size: 20px;">Hello {order.name},</h2>
-                <p style="font-size: 16px; line-height: 1.6;">Thank you for your purchase! Your payment was successful, and your <strong>{order.product.name}</strong> is ready.</p>
+                <p style="font-size: 16px; line-height: 1.6;">Thank you for your purchase! Your payment was successful.</p>
+                
+                <p style="font-size: 18px; font-weight: bold; color: #E74C3C; background: #f8f9fa; padding: 12px; border-radius: 5px; text-align: center; border: 1px dashed #E74C3C;">
+                    Your Order ID: #{order.id}
+                </p>
+
                 <p style="font-size: 16px; line-height: 1.6;">We have attached your Workbook to this email. You can also click the button below to download it:</p>
                 <div style="text-align: center; margin: 35px 0;">
                     <a href="{download_link}" style="background-color: #E74C3C; color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 5px; font-size: 18px; font-weight: bold; display: inline-block;"> Download Workbook Now</a>
@@ -192,11 +197,13 @@ def send_order_email(order):
     plain_message = f"""
     Hello {order.name},
     
-    Thank you for your purchase! Your {order.product.name} is ready.
-    We have attached the PDF to this email. 
+    Thank you for your purchase! 
+    Your Order ID is: #{order.id}
+    
+    Your {order.product.name} is ready. We have attached the PDF to this email. 
     You can also download your workbook here: {download_link}
     
-    Need help? Just reply to this email.
+    Need help? Just reply to this email and mention your Order ID.
     """
     
     try:
