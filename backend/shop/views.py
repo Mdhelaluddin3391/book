@@ -12,6 +12,7 @@ from .models import ContactMessage, Order, Product
 from django.core.mail import EmailMultiAlternatives
 import os
 import threading
+from django_ratelimit.decorators import ratelimit
 
 
 logger = logging.getLogger(__name__)
@@ -42,6 +43,7 @@ def get_product_details(request):
     return JsonResponse({"products": products_data})
 
 @csrf_exempt
+@ratelimit(key='ip', rate='5/m', block=True)
 def contact_api(request):
     if request.method == 'POST':
         try:
