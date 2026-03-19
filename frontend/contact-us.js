@@ -1,13 +1,13 @@
 
 document.querySelector('form').addEventListener('submit', function (event) {
-    event.preventDefault(); 
+    event.preventDefault();
 
     const name = document.querySelector('input[name="name"]').value;
     const email = document.querySelector('input[name="email"]').value;
     const message = document.querySelector('textarea[name="message"]').value;
     const submitBtn = document.querySelector('.btn-submit');
 
-    submitBtn.innerHTML = "Sending..."; 
+    submitBtn.innerHTML = "Sending...";
 
     fetch(`${BACKEND_URL}/contact/`, {
         method: 'POST',
@@ -20,7 +20,7 @@ document.querySelector('form').addEventListener('submit', function (event) {
         .then(data => {
             if (data.status === "success") {
                 alert("Thank you! Aapka message send ho gaya hai.");
-                document.querySelector('form').reset(); 
+                document.querySelector('form').reset();
             } else {
                 alert("Error: " + data.message);
             }

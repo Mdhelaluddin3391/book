@@ -24,7 +24,7 @@ async function payNow() {
 
     const popup = document.getElementById("popup");
     const popupBox = document.querySelector(".popup-box");
-    
+
     popupBox.innerHTML = `<h3>Processing Order...</h3><p>Redirecting to secure gateway...</p>`;
     popup.style.display = "flex";
 
@@ -39,10 +39,10 @@ async function payNow() {
                 payment_method: selectedMethod
             })
         });
-        
+
         const data = await response.json();
-        
-        if(data.status === 'success') {
+
+        if (data.status === 'success') {
             window.location.href = data.payment_url;
         } else {
             popupBox.innerHTML = `
@@ -63,15 +63,15 @@ async function payNow() {
 
 
 
-document.addEventListener("DOMContentLoaded", async function() {
+document.addEventListener("DOMContentLoaded", async function () {
     try {
         const response = await fetch(`${BACKEND_URL}/product-details/`);
         const data = await response.json();
-        
+
         if (data && data.price_usd && data.mrp_usd) {
             const finalPrice = parseFloat(data.price_usd);
             const basePrice = parseFloat(data.mrp_usd);
-            
+
             const discountAmount = (basePrice - finalPrice).toFixed(2);
 
             document.getElementById('base-price').innerText = `$${basePrice.toFixed(2)}`;

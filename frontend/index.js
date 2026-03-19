@@ -1,7 +1,7 @@
 
-document.addEventListener("DOMContentLoaded", async function() {
+document.addEventListener("DOMContentLoaded", async function () {
     const productContainer = document.getElementById("product-container");
-    
+
     try {
         const response = await fetch(`${CONFIG.BACKEND_URL}/product-details/`);
         const data = await response.json();
@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         productContainer.innerHTML = "";
 
         if (data && data.products && data.products.length > 0) {
-            
+
             data.products.forEach(product => {
-                
+
                 const btnClass = product.is_active ? "btn-view" : "btn-view disabled";
                 const btnText = product.is_active ? "View Details" : "Coming Soon";
                 const btnStyle = product.is_active ? "" : "background: #ccc; cursor: not-allowed; pointer-events: none;";
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 `;
                 productContainer.innerHTML += cardHTML;
             });
-            
+
         } else {
             productContainer.innerHTML = "<p>No products available right now. Please check back later!</p>";
         }
