@@ -158,6 +158,13 @@ input:focus {
     color: var(--c-dark);
 }
 
+.method-name i {
+    font-size: 1.2rem;
+    vertical-align: middle;
+    width: 25px; 
+    text-align: center;
+}
+
 
 .btn-pay {
     width: 100%;
