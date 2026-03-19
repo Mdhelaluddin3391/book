@@ -191,11 +191,18 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch(`${CONFIG.BACKEND_URL}/product-details/`)
         .then(response => response.json())
         .then(data => {
-            if (data && data.price_usd) {
+            if (data && data.products && data.products.length > 0) {
+                const product = data.products[0];
+                
                 const priceElements = document.querySelectorAll('.dynamic-price');
                 priceElements.forEach(el => {
-                    el.innerHTML = `Only $${data.price_usd}/- `;
+                    el.innerHTML = `Only $${product.price_usd}/- `;
                 });
+
+                const mainImage = document.getElementById('dynamic-hero-image');
+                if (mainImage && product.image_url) {
+                    mainImage.src = product.image_url;
+                }
             }
         })
         .catch(err => console.error("Error fetching product details:", err));

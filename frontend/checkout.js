@@ -68,12 +68,18 @@ document.addEventListener("DOMContentLoaded", async function () {
         const response = await fetch(`${BACKEND_URL}/product-details/`);
         const data = await response.json();
 
-        if (data && data.price_usd && data.mrp_usd) {
-            const finalPrice = parseFloat(data.price_usd);
-            const basePrice = parseFloat(data.mrp_usd);
-
+        if (data && data.products && data.products.length > 0) {
+            const product = data.products[0]; 
+            
+            const finalPrice = parseFloat(product.price_usd);
+            const basePrice = parseFloat(product.mrp_usd);
             const discountAmount = (basePrice - finalPrice).toFixed(2);
 
+            const productNameEl = document.getElementById('checkout-product-name');
+            if (productNameEl) {
+                productNameEl.innerText = product.name + " (PDF)";
+            }
+            
             document.getElementById('base-price').innerText = `$${basePrice.toFixed(2)}`;
             document.getElementById('discount-price').innerText = `- $${discountAmount}`;
             document.getElementById('final-price').innerText = `$${finalPrice.toFixed(2)}`;
