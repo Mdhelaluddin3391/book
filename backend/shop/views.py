@@ -279,16 +279,23 @@ def paypal_webhook(request):
 
         if event_type == 'PAYMENT.SALE.COMPLETED':
             resource = payload.get('resource', {})
-            parent_payment_id = resource.get('parent_payment')
+            parent_payment_id = resource.get('parent_payment') 
 
             if parent_payment_id:
                 try:
                     order = Order.objects.get(transaction_id=parent_payment_id)
+                    
                     if order.payment_status != 'Completed':
-                        order.payment_status = 'Completed'
-                        order.save()
-                        logger.info(f"PayPal Order {order.id} Successfully Completed!")
-                        send_order_email(order) 
+                        payment = paypalrestsdk.Payment.find(parent_payment_id)
+                        
+                        if payment and payment.state == 'approved':
+                            order.payment_status = 'Completed'
+                            order.save()
+                            logger.info(f"PayPal Order {order.id} Successfully Verified & Completed!")
+                            send_order_email(order)
+                        else:
+                            logger.warning(f"Fake/Unapproved PayPal request detected for Order {order.id}")
+                        
                 except Order.DoesNotExist:
                     logger.warning(f"PayPal Webhook: Order with transaction ID {parent_payment_id} not found.")
 
