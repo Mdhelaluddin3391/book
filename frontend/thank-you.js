@@ -7,10 +7,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const downloadBtn = document.querySelector('.btn-download');
 
     if (token) {
-        // Agar PayPal ki taraf se PayerID aayi hai, toh pehle payment verify karein
         if (paymentId && payerId) {
             downloadBtn.innerHTML = "Verifying Payment... Please wait";
-            downloadBtn.style.pointerEvents = "none"; // Button disable karein
+            downloadBtn.style.pointerEvents = "none";
             
             fetch(`${CONFIG.BACKEND_URL}/execute-paypal/`, {
                 method: 'POST',
@@ -20,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'success') {
-                    // Payment Verify ho gayi! Ab download enable karein
                     downloadBtn.innerHTML = "📥 Download Worksheets Now";
                     downloadBtn.style.pointerEvents = "auto";
                     downloadBtn.href = `${CONFIG.BACKEND_URL}/download/${token}/`;
@@ -35,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 downloadBtn.style.backgroundColor = "red";
             });
         } else {
-            // Stripe ke liye direct chalega
             downloadBtn.href = `${CONFIG.BACKEND_URL}/download/${token}/`;
         }
     } else {

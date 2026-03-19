@@ -1,9 +1,4 @@
-/* =========================================
-   EXTRA PAGES STYLES (Policies & Thank You)
-   Matches the Modern & Trustworthy Theme
-   ========================================= */
 
-/* Ensure the page takes full height so footer stays at bottom */
 body {
     display: flex;
     flex-direction: column;
@@ -13,17 +8,13 @@ body {
 
 main.main-content {
     flex: 1;
-    /* Pushes footer to the bottom */
     background-color: var(--c-bg-light, #F8FAFC);
 }
 
-/* =========================================
-   POLICY PAGES (Privacy, Terms, Refund)
-   ========================================= */
+
 .policy-header {
     background: linear-gradient(135deg, var(--c-primary, #120d6e) 0%, #030f77 100%);
     padding: 60px 20px 80px;
-    /* Extra bottom padding for overlap effect */
     text-align: center;
     color: var(--c-white, #FFFFFF);
 }
@@ -43,7 +34,6 @@ main.main-content {
 .policy-container {
     max-width: 900px;
     margin: -50px auto 60px;
-    /* Overlaps the header slightly for a modern look */
     background: var(--c-white, #FFFFFF);
     padding: 40px 50px;
     border-radius: 20px;
@@ -79,9 +69,7 @@ main.main-content {
     margin-bottom: 20px;
 }
 
-/* =========================================
-   THANK YOU PAGE (Success Card)
-   ========================================= */
+
 .success-wrap {
     display: flex;
     align-items: center;
@@ -100,7 +88,6 @@ main.main-content {
     border-radius: 24px;
     box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
     border-top: 8px solid var(--c-secondary, #10B981);
-    /* Success Green */
 }
 
 .success-card .icon {
@@ -124,7 +111,6 @@ main.main-content {
     margin-bottom: 30px;
 }
 
-/* SVGs ko theek se align karne ke liye thodi styling */
 .success-card .icon svg {
     width: 80px;
     height: 80px;
@@ -137,7 +123,6 @@ main.main-content {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    /* Text aur icon ke beech gap */
 }
 
 .btn-download svg {

@@ -1,16 +1,14 @@
 
 document.querySelector('form').addEventListener('submit', function (event) {
-    event.preventDefault(); // Page ko reload hone se rokna
+    event.preventDefault(); 
 
-    // Form ka data collect karna
     const name = document.querySelector('input[name="name"]').value;
     const email = document.querySelector('input[name="email"]').value;
     const message = document.querySelector('textarea[name="message"]').value;
     const submitBtn = document.querySelector('.btn-submit');
 
-    submitBtn.innerHTML = "Sending..."; // Button ka text change karna
+    submitBtn.innerHTML = "Sending..."; 
 
-    // API ko data bhejna
     fetch(`${BACKEND_URL}/contact/`, {
         method: 'POST',
         headers: {
@@ -22,7 +20,7 @@ document.querySelector('form').addEventListener('submit', function (event) {
         .then(data => {
             if (data.status === "success") {
                 alert("Thank you! Aapka message send ho gaya hai.");
-                document.querySelector('form').reset(); // Form ko clear karna
+                document.querySelector('form').reset(); 
             } else {
                 alert("Error: " + data.message);
             }

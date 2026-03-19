@@ -2,7 +2,6 @@ const BACKEND_URL = CONFIG.BACKEND_URL;
 const paymentOptions = document.querySelectorAll('.payment-option');
 let selectedMethod = "Card";
 
-// Payment method visually select karne ke liye
 paymentOptions.forEach(opt => {
     opt.addEventListener('click', function () {
         const radio = this.querySelector('input[type="radio"]');
@@ -13,7 +12,6 @@ paymentOptions.forEach(opt => {
     });
 });
 
-// Single aur correct payNow function
 async function payNow() {
     let name = document.getElementById("name").value.trim();
     let email = document.getElementById("email").value.trim();
@@ -45,7 +43,6 @@ async function payNow() {
         const data = await response.json();
         
         if(data.status === 'success') {
-            // Backend se aayi hui payment link par redirect karein
             window.location.href = data.payment_url;
         } else {
             popupBox.innerHTML = `
@@ -65,24 +62,18 @@ async function payNow() {
 }
 
 
-// =========================================
-// --- DYNAMIC PRICE FETCH LOGIC ---
-// =========================================
+
 document.addEventListener("DOMContentLoaded", async function() {
     try {
-        // Backend se product details fetch karo
         const response = await fetch(`${BACKEND_URL}/product-details/`);
         const data = await response.json();
         
-        // Check karein ki data mein USD price aur mrp dono hain ya nahi
         if (data && data.price_usd && data.mrp_usd) {
             const finalPrice = parseFloat(data.price_usd);
             const basePrice = parseFloat(data.mrp_usd);
             
-            // Discount amount dynamically calculate ho raha hai (USD ke hisaab se)
             const discountAmount = (basePrice - finalPrice).toFixed(2);
 
-            // HTML elements ko update karo ($ symbol ke saath)
             document.getElementById('base-price').innerText = `$${basePrice.toFixed(2)}`;
             document.getElementById('discount-price').innerText = `- $${discountAmount}`;
             document.getElementById('final-price').innerText = `$${finalPrice.toFixed(2)}`;

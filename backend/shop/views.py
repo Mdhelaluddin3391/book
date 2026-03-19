@@ -166,7 +166,7 @@ def send_order_email(order):
     """
     Customer ko successful payment ke baad ek professional HTML email bhejta hai aur PDF attach karta hai.
     """
-    subject = f'Your {order.product.name} is Ready for Download! 🚀'
+    subject = f'Your {order.product.name} is Ready for Download! '
     download_link = f"{settings.FRONTEND_URL}/thank-you.html?token={order.download_token}"
     
     html_message = f"""
@@ -174,14 +174,14 @@ def send_order_email(order):
     <body style="font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
             <div style="background-color: #2C3E50; padding: 20px; text-align: center; border-bottom: 4px solid #E74C3C;">
-                <h1 style="color: #F1C40F; margin: 0; font-size: 24px;">📚 {order.product.name}</h1>
+                <h1 style="color: #F1C40F; margin: 0; font-size: 24px;"> {order.product.name}</h1>
             </div>
             <div style="padding: 30px; color: #333333;">
                 <h2 style="color: #2C3E50; font-size: 20px;">Hello {order.name},</h2>
                 <p style="font-size: 16px; line-height: 1.6;">Thank you for your purchase! Your payment was successful, and your <strong>{order.product.name}</strong> is ready.</p>
                 <p style="font-size: 16px; line-height: 1.6;">We have attached your Workbook to this email. You can also click the button below to download it:</p>
                 <div style="text-align: center; margin: 35px 0;">
-                    <a href="{download_link}" style="background-color: #E74C3C; color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 5px; font-size: 18px; font-weight: bold; display: inline-block;">📥 Download Workbook Now</a>
+                    <a href="{download_link}" style="background-color: #E74C3C; color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 5px; font-size: 18px; font-weight: bold; display: inline-block;"> Download Workbook Now</a>
                 </div>
             </div>
         </div>
@@ -200,7 +200,7 @@ def send_order_email(order):
     """
     
     try:
-        # Email Message create karein
+        # emil crate
         msg = EmailMultiAlternatives(
             subject=subject,
             body=plain_message,
@@ -208,10 +208,10 @@ def send_order_email(order):
             to=[order.email]
         )
         
-        # HTML content attach karein
+        # style add
         msg.attach_alternative(html_message, "text/html")
         
-        # PDF File ko attach karein
+        # pdf add
         if order.product and order.product.pdf_file:
             pdf_path = order.product.pdf_file.path
             if os.path.exists(pdf_path):
@@ -219,13 +219,13 @@ def send_order_email(order):
             else:
                 logger.warning(f"PDF attachment failed: File not found at {pdf_path}")
 
-        # Email send karein
+        # send
         msg.send(fail_silently=False)
         logger.info(f"HTML Email with PDF successfully sent to {order.email}")
         
     except Exception as e:
         logger.error(f"Failed to send HTML email to {order.email}. Error: {str(e)}")
-        raise e  # <-- YAHAN YE LINE ADD KAREIN taaki admin panel ko error pata chal
+        raise e 
 
 @csrf_exempt
 def stripe_webhook(request):

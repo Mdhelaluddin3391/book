@@ -1,13 +1,10 @@
-/* =========================================
-   FOOTER STYLES (Modern & Consistent Theme)
-   ========================================= */
 
 .site-footer {
-    background-color:#02013d; /* Deep slate dark for premium feel */
+    background-color:#02013d; 
     color: var(--c-white, #FFFFFF);
     padding: 80px 5% 30px;
     font-family: 'Poppins', 'Arial', sans-serif;
-    border-top: 6px solid var(--c-action, #FF5A5F); /* Vibrant coral top border */
+    border-top: 6px solid var(--c-action, #FF5A5F); 
     position: relative;
 }
 
@@ -34,11 +31,11 @@
 }
 
 .footer-brand h3 span {
-    color: var(--c-accent, #FFC107); /* Playful yellow touch for the brand name */
+    color: var(--c-accent, #FFC107);
 }
 
 .footer-brand p {
-    color: #94A3B8; /* Slate 400 for softer, readable text */
+    color: #94A3B8;
     font-size: 15px;
     line-height: 1.8;
     max-width: 380px;
@@ -58,7 +55,6 @@
     display: inline-block;
 }
 
-/* Elegant line below the heading */
 .footer-links h4::after {
     content: '';
     position: absolute;
@@ -88,10 +84,9 @@
     display: inline-block;
 }
 
-/* Modern hover effect for links */
 .footer-links a:hover {
     color: var(--c-white, #FFFFFF);
-    transform: translateX(6px); /* Smoothly moves right on hover */
+    transform: translateX(6px);
 }
 
 .footer-bottom {
@@ -111,9 +106,7 @@
     font-size: 14px;
 }
 
-/* =========================================
-   RESPONSIVE DESIGN FOR FOOTER
-   ========================================= */
+
 @media (max-width: 768px) {
     .site-footer {
         padding: 60px 5% 30px;
@@ -130,17 +123,13 @@
 }
 
 
-/*mini futer style*/
 
-/* =========================================
-   MINI FOOTER (For Checkout & Thank You Pages)
-   ========================================= */
 .site-footer.mini-footer {
-    padding: 20px 5%; /* Upar aur niche ki extra 80px padding kam kar di */
+    padding: 20px 5%; 
 }
 
 .site-footer.mini-footer .footer-bottom {
-    margin-top: 0; /* Khali jagah ka margin hata diya */
+    margin-top: 0;
     padding-top: 0;
-    border-top: none; /* Upar ki line hata di kyunki koi content nahi hai uske upar */
+    border-top: none; 
 }
