@@ -256,7 +256,6 @@ def stripe_webhook(request):
         session = event['data']['object']
         order_id = session.get('metadata', {}).get('order_id')
         
-        # Naya Code: Stripe se actual paid amount nikalna (Stripe cents me bhejta hai)
         amount_paid = session.get('amount_total', 0) / 100.0  
         
         if order_id:
@@ -264,7 +263,6 @@ def stripe_webhook(request):
                 order = Order.objects.get(id=order_id)
                 if order.payment_status != 'Completed':
                     
-                    # Naya Code: Security Check - Kya received amount database amount ke barabar hai?
                     if float(order.amount) == float(amount_paid):
                         order.payment_status = 'Completed'
                         order.save()
@@ -291,7 +289,6 @@ def paypal_webhook(request):
             resource = payload.get('resource', {})
             parent_payment_id = resource.get('parent_payment') 
             
-            # Naya Code: PayPal se actual paid amount nikalna
             amount_paid = float(resource.get('amount', {}).get('total', 0))
 
             if parent_payment_id:
@@ -303,7 +300,6 @@ def paypal_webhook(request):
                         
                         if payment and payment.state == 'approved':
                             
-                            # Naya Code: Security Check - Kya received amount database amount ke barabar hai?
                             if float(order.amount) == float(amount_paid):
                                 order.payment_status = 'Completed'
                                 order.save()
