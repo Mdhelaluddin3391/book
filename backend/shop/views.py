@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from .models import ContactMessage, Order, Product 
 from django.core.mail import EmailMultiAlternatives
 import os
+import threading
 
 
 logger = logging.getLogger(__name__)
@@ -336,8 +337,8 @@ def execute_paypal_payment(request):
                     order.payment_status = 'Completed'
                     order.save()
                     print(f"PayPal Order {order.id} Successfully Executed & Completed!")
-                    
-                    send_order_email(order)
+                    email_thread = threading.Thread(target=send_order_email, args=(order,))
+                    email_thread.start()
                     
                 return JsonResponse({"status": "success"})
             else:
