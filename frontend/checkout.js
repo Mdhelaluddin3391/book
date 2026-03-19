@@ -88,3 +88,21 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("Error fetching dynamic price on checkout:", error);
     }
 });
+
+//chackkout agremnt
+document.addEventListener("DOMContentLoaded", function () {
+    const refundCheckbox = document.getElementById('agree-refund');
+    const payButton = document.getElementById('main-pay-button');
+
+    if (refundCheckbox && payButton) {
+        refundCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                payButton.disabled = false;
+                payButton.style.opacity = '1';
+            } else {
+                payButton.disabled = true;
+                payButton.style.opacity = '0.6';
+            }
+        });
+    }
+});
