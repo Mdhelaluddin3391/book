@@ -1,23 +1,29 @@
-.venv/
-venv/
-backend/.env
-.venv/
-venv/
-env/
 
-backend/.env
-.env
-
-backend/__pycache__/
+__pycache__/
 *.py[cod]
 *$py.class
+*.pyo
+*.pyd
+.pytest_cache/
+
+
+venv/
+.venv/
+env/
+.env
+
 
 db.sqlite3
 *.sqlite3
 
+
 media/
+backend/protected_media/
+staticfiles/
+
+
+frontend/config.js
+node_modules/
 
 .DS_Store
 Thumbs.db
-
-frontend/config.js
