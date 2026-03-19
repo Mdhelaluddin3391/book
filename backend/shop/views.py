@@ -256,17 +256,25 @@ def stripe_webhook(request):
         session = event['data']['object']
         order_id = session.get('metadata', {}).get('order_id')
         
+        # Naya Code: Stripe se actual paid amount nikalna (Stripe cents me bhejta hai)
+        amount_paid = session.get('amount_total', 0) / 100.0  
+        
         if order_id:
             try:
                 order = Order.objects.get(id=order_id)
                 if order.payment_status != 'Completed':
-                    order.payment_status = 'Completed'
-                    order.save()
-                    logger.info(f"Stripe Order {order.id} Successfully Completed!")
                     
-                    email_thread = threading.Thread(target=send_order_email, args=(order,))
-                    email_thread.start()
-                    
+                    # Naya Code: Security Check - Kya received amount database amount ke barabar hai?
+                    if float(order.amount) == float(amount_paid):
+                        order.payment_status = 'Completed'
+                        order.save()
+                        logger.info(f"Stripe Order {order.id} Successfully Completed!")
+                        
+                        email_thread = threading.Thread(target=send_order_email, args=(order,))
+                        email_thread.start()
+                    else:
+                        logger.warning(f"Stripe Amount Mismatch! Order {order.id}: Expected {order.amount}, Got {amount_paid}")
+                        
             except Order.DoesNotExist:
                 logger.warning(f"Stripe Webhook: Order {order_id} not found.")
 
@@ -282,6 +290,9 @@ def paypal_webhook(request):
         if event_type == 'PAYMENT.SALE.COMPLETED':
             resource = payload.get('resource', {})
             parent_payment_id = resource.get('parent_payment') 
+            
+            # Naya Code: PayPal se actual paid amount nikalna
+            amount_paid = float(resource.get('amount', {}).get('total', 0))
 
             if parent_payment_id:
                 try:
@@ -291,10 +302,15 @@ def paypal_webhook(request):
                         payment = paypalrestsdk.Payment.find(parent_payment_id)
                         
                         if payment and payment.state == 'approved':
-                            order.payment_status = 'Completed'
-                            order.save()
-                            logger.info(f"PayPal Order {order.id} Successfully Verified & Completed!")
-                            send_order_email(order)
+                            
+                            # Naya Code: Security Check - Kya received amount database amount ke barabar hai?
+                            if float(order.amount) == float(amount_paid):
+                                order.payment_status = 'Completed'
+                                order.save()
+                                logger.info(f"PayPal Order {order.id} Successfully Verified & Completed!")
+                                send_order_email(order)
+                            else:
+                                logger.warning(f"PayPal Amount Mismatch! Order {order.id}: Expected {order.amount}, Got {amount_paid}")
                         else:
                             logger.warning(f"Fake/Unapproved PayPal request detected for Order {order.id}")
                         

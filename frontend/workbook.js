@@ -188,11 +188,21 @@ faqQuestions.forEach(question => {
 
 
 document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
     fetch(`${CONFIG.BACKEND_URL}/product-details/`)
         .then(response => response.json())
         .then(data => {
             if (data && data.products && data.products.length > 0) {
-                const product = data.products[0];
+                let product = data.products[0];
+                
+                if (productId) {
+                    const foundProduct = data.products.find(p => p.id == productId);
+                    if (foundProduct) {
+                        product = foundProduct;
+                    }
+                }
                 
                 const priceElements = document.querySelectorAll('.dynamic-price');
                 priceElements.forEach(el => {
@@ -203,6 +213,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (mainImage && product.image_url) {
                     mainImage.src = product.image_url;
                 }
+
+                const orderLinks = document.querySelectorAll('a[href="checkout.html"]');
+                orderLinks.forEach(link => {
+                    link.href = `checkout.html?id=${product.id}`;
+                });
             }
         })
         .catch(err => console.error("Error fetching product details:", err));

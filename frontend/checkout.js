@@ -2,6 +2,10 @@ const BACKEND_URL = CONFIG.BACKEND_URL;
 const paymentOptions = document.querySelectorAll('.payment-option');
 let selectedMethod = "Card";
 
+// Naya Code: URL se product ID nikalna
+const urlParams = new URLSearchParams(window.location.search);
+const productId = urlParams.get('id');
+
 paymentOptions.forEach(opt => {
     opt.addEventListener('click', function () {
         const radio = this.querySelector('input[type="radio"]');
@@ -36,7 +40,8 @@ async function payNow() {
                 name: name,
                 email: email,
                 phone: phone,
-                payment_method: selectedMethod
+                payment_method: selectedMethod,
+                product_id: productId // Naya Code: Product ID backend bhejna
             })
         });
 
@@ -61,15 +66,21 @@ async function payNow() {
     }
 }
 
-
-
 document.addEventListener("DOMContentLoaded", async function () {
     try {
         const response = await fetch(`${BACKEND_URL}/product-details/`);
         const data = await response.json();
 
         if (data && data.products && data.products.length > 0) {
-            const product = data.products[0]; 
+            let product = data.products[0]; 
+            
+            // Naya Code: Agar URL me ID hai toh correct product select karna
+            if (productId) {
+                const foundProduct = data.products.find(p => p.id == productId);
+                if (foundProduct) {
+                    product = foundProduct;
+                }
+            }
             
             const finalPrice = parseFloat(product.price_usd);
             const basePrice = parseFloat(product.mrp_usd);
