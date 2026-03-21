@@ -12,19 +12,19 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'phone', 'email', 'product', 'amount', 'payment_status', 'transaction_id', 'created_at')
+    list_display = ('id', 'name',  'email', 'product', 'amount', 'payment_status', 'transaction_id', 'created_at')
     
     list_filter = ('payment_status', 'created_at', 'product')
     
     date_hierarchy = 'created_at'
     
-    search_fields = ('id', 'name', 'email', 'phone', 'transaction_id', 'product__name')
+    search_fields = ('id', 'name', 'email', 'transaction_id', 'product__name')
     
     readonly_fields = ('download_token', 'created_at', 'download_count')
     
     fieldsets = (
         ('Customer Details', {
-            'fields': ('name', 'email', 'phone')
+            'fields': ('name', 'email')
         }),
         ('Order & Payment Details', {
             'fields': ('product', 'amount', 'currency', 'payment_status', 'payment_method', 'transaction_id')

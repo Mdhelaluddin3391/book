@@ -80,7 +80,7 @@ def process_real_payment(request):
                 product=product,
                 name=data.get('name'), 
                 email=data.get('email'), 
-                phone=data.get('phone'), 
+                # phone=data.get('phone'), 
                 amount=product.price_usd,
                 currency='USD',
                 payment_method=method,

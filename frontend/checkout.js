@@ -18,10 +18,10 @@ paymentOptions.forEach(opt => {
 async function payNow() {
     let name = document.getElementById("name").value.trim();
     let email = document.getElementById("email").value.trim();
-    let phone = document.getElementById("phone").value.trim();
+    // let phone = document.getElementById("phone").value.trim();
 
-    if (name === "" || email === "" || phone === "") {
-        alert("Please fill Name, Email, and Phone number first.");
+    if (name === "" || email === "") {
+        alert("Please fill Name and Email first."); 
         return;
     }
 
@@ -38,7 +38,7 @@ async function payNow() {
             body: JSON.stringify({
                 name: name,
                 email: email,
-                phone: phone,
+                // phone: phone,
                 payment_method: selectedMethod,
                 product_id: productId
             })
