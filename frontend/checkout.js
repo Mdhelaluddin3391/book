@@ -16,12 +16,38 @@ paymentOptions.forEach(opt => {
 });
 
 async function payNow() {
-    let name = document.getElementById("name").value.trim();
-    let email = document.getElementById("email").value.trim();
-    // let phone = document.getElementById("phone").value.trim();
+    let nameInput = document.getElementById("name");
+    let emailInput = document.getElementById("email");
+    
+    let name = nameInput.value.trim();
+    let email = emailInput.value.trim();
 
-    if (name === "" || email === "") {
-        alert("Please fill Name and Email first."); 
+    nameInput.style.borderColor = "";
+    emailInput.style.borderColor = "";
+
+    let isValid = true;
+    let firstInvalidElement = null;
+
+    if (name === "") {
+        nameInput.style.borderColor = "red";
+        isValid = false;
+        firstInvalidElement = nameInput;
+    }
+
+    if (email === "") {
+        emailInput.style.borderColor = "red";
+        isValid = false;
+        if (!firstInvalidElement) {
+            firstInvalidElement = emailInput;
+        }
+    }
+
+    if (!isValid) {
+        const yOffset = -200; 
+        const y = firstInvalidElement.getBoundingClientRect().top + window.scrollY + yOffset;
+        
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        
         return;
     }
 
@@ -38,7 +64,6 @@ async function payNow() {
             body: JSON.stringify({
                 name: name,
                 email: email,
-                // phone: phone,
                 payment_method: selectedMethod,
                 product_id: productId
             })
@@ -64,6 +89,7 @@ async function payNow() {
         `;
     }
 }
+
 
 document.addEventListener("DOMContentLoaded", async function () {
     try {
@@ -115,3 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+
+document.getElementById("name").addEventListener("input", function() { this.style.borderColor = ""; });
+document.getElementById("email").addEventListener("input", function() { this.style.borderColor = ""; });
