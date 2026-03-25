@@ -13,7 +13,8 @@ from django.core.mail import EmailMultiAlternatives
 import os
 import threading
 from django_ratelimit.decorators import ratelimit
-
+from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse, FileResponse, Http404
 
 logger = logging.getLogger(__name__)
 
@@ -319,34 +320,37 @@ def paypal_webhook(request):
         logger.error(f"PayPal Webhook Error: {str(e)}")
         return HttpResponse(status=400)
     
+
+
 def secure_download_api(request, token):
     order = get_object_or_404(Order, download_token=token)
     
     if order.payment_status != 'Completed':
-        return JsonResponse({
-            "error": "Access Denied. Aapki payment abhi tak verify nahi hui hai."
-        }, status=403)
+        return JsonResponse({"error": "Access Denied. Aapki payment abhi tak verify nahi hui hai."}, status=403)
 
     if order.download_count >= order.MAX_DOWNLOADS:
-        return JsonResponse({
-            "error": "Security Alert: Download limit exceeded. Yeh link ab expire ho chuka hai."
-        }, status=403)
+        return JsonResponse({"error": "Security Alert: Download limit exceeded. Yeh link ab expire ho chuka hai."}, status=403)
 
     product = order.product
     if not product or not product.pdf_file:
         raise Http404("Product ya uski file database mein nahi mili.")
     
-    filepath = product.pdf_file.path
-
-    if os.path.exists(filepath):
+    if getattr(settings, 'USE_S3', False):
+        # AWS S3 logic
         order.download_count += 1
         order.save()
-        
-        safe_filename = product.name.replace(" ", "_") + ".pdf"
-        return FileResponse(open(filepath, 'rb'), as_attachment=True, filename=safe_filename)
+        file_url = product.pdf_file.storage.url(product.pdf_file.name)
+        return redirect(file_url)
     else:
-        logger.error(f"File missing on server: {filepath}")
-        raise Http404(f"File server par nahi mili! Path check karein: {filepath}")
+        filepath = product.pdf_file.path
+        if os.path.exists(filepath):
+            order.download_count += 1
+            order.save()
+            safe_filename = product.name.replace(" ", "_") + ".pdf"
+            return FileResponse(open(filepath, 'rb'), as_attachment=True, filename=safe_filename)
+        else:
+            logger.error(f"File missing on server: {filepath}")
+            raise Http404(f"File server par nahi mili! Path check karein: {filepath}")
     
 @csrf_exempt
 def execute_paypal_payment(request):

@@ -1,15 +1,34 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from storages.backends.s3boto3 import S3Boto3Storage
 import uuid
 import os
 
 PROTECTED_MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'protected_media')
 protected_storage = FileSystemStorage(location=PROTECTED_MEDIA_ROOT)
 
+
+class PrivateMediaStorage(S3Boto3Storage):
+    location = 'books'
+    default_acl = 'private'
+    file_overwrite = False
+    custom_domain = False
+
+def get_protected_storage():
+    if getattr(settings, 'USE_S3', False):
+        from storages.backends.s3boto3 import S3Boto3Storage
+        class PrivateMediaStorage(S3Boto3Storage):
+            location = 'books'
+            default_acl = 'private'
+            file_overwrite = False
+            custom_domain = False
+        return PrivateMediaStorage()
+    return local_protected_storage
+
 class Product(models.Model):
     name = models.CharField(max_length=200, default="Kids Learning Workbook")
-    pdf_file = models.FileField(upload_to='books/', storage=protected_storage)
+    pdf_file = models.FileField(upload_to='books/', storage=get_protected_storage)
     description = models.TextField(default="500+ pages of logic activities for ages 3-8.", blank=True)
     image_url = models.URLField(default="https://crevvo.com/wp-content/uploads/2024/02/14000-Kids-Worksheets.webp", blank=True)
     mrp_usd = models.DecimalField(max_digits=10, decimal_places=2, default=25.00) 
