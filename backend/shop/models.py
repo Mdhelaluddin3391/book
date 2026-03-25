@@ -24,7 +24,9 @@ def get_protected_storage():
             file_overwrite = False
             custom_domain = False
         return PrivateMediaStorage()
-    return local_protected_storage
+    return protected_storage
+
+
 
 class Product(models.Model):
     name = models.CharField(max_length=200, default="Kids Learning Workbook")
